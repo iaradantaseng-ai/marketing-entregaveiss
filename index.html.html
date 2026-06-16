@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing · Entregáveis</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f4f6;--surface:#ffffff;--surface2:#f9f9fb;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#0f0f10;--text2:#5a5a6a;--text3:#9898a8;
+  --accent:#1a1a2e;
+  --ok:#16a34a;--ok-bg:#f0fdf4;--ok-border:#bbf7d0;
+  --warn:#b45309;--warn-bg:#fffbeb;--warn-border:#fde68a;
+  --danger:#dc2626;--danger-bg:#fef2f2;--danger-border:#fecaca;
+  --info:#1d4ed8;--info-bg:#eff6ff;--info-border:#bfdbfe;
+  --r:10px;--r-sm:6px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#0e0e12;--surface:#18181f;--surface2:#1f1f28;
+    --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+    --text:#f0f0f5;--text2:#9090a8;--text3:#55556a;
+    --accent:#e8e8f0;
+    --ok:#22c55e;--ok-bg:#052e16;--ok-border:#166534;
+    --warn:#fbbf24;--warn-bg:#1c1300;--warn-border:#854d0e;
+    --danger:#f87171;--danger-bg:#2d0a0a;--danger-border:#991b1b;
+    --info:#60a5fa;--info-bg:#0c1a3a;--info-border:#1e40af;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+
+/* ── HEADER ── */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.header-logo{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.header-logo i{color:var(--surface);font-size:16px}
+.header h1{font-size:15px;font-weight:600;flex:1}
+.header-meta{font-size:12px;color:var(--text3)}
+.gs-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid var(--border2);color:var(--text2);cursor:pointer;transition:background .15s}
+.gs-badge:hover{background:var(--surface2)}
+.gs-badge.connected{border-color:var(--ok-border);background:var(--ok-bg);color:var(--ok)}
+.gs-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* ── NAV ── */
+.nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;gap:0}
+.nav-tab{padding:11px 16px;font-size:13px;font-weight:500;cursor:pointer;border:none;border-bottom:2px solid transparent;color:var(--text2);display:inline-flex;align-items:center;gap:6px;background:none;transition:color .15s,border-color .15s;white-space:nowrap}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--text)}
+.nav-tab:hover:not(.active){color:var(--text)}
+.nav-badge{font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;background:var(--danger-bg);color:var(--danger);margin-left:2px}
+
+/* ── PAGES ── */
+.page{display:none;padding:1.5rem;max-width:1140px;margin:0 auto}
+.page.active{display:block}
+
+/* ── BTNS ── */
+.btn{padding:8px 16px;font-size:13px;font-weight:500;border-radius:var(--r-sm);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s,background .15s;text-decoration:none}
+.btn-primary{background:var(--accent);color:var(--surface);border:none}
+.btn-primary:hover{opacity:.85}
+.btn-ghost{background:none;border:1px solid var(--border2);color:var(--text2)}
+.btn-ghost:hover{background:var(--surface2);color:var(--text)}
+.btn-danger{background:none;border:1px solid var(--danger-border);color:var(--danger)}
+.btn-sm{padding:5px 11px;font-size:12px}
+
+/* ── CARDS / KPI ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.25rem}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1.1rem;position:relative;overflow:hidden}
+.kpi-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:4px}
+.kpi-value{font-size:26px;font-weight:700;line-height:1}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.kpi-bar{position:absolute;bottom:0;left:0;height:3px;background:currentColor;opacity:.35}
+.kv-ok{color:var(--ok)} .kv-late{color:var(--danger)} .kv-warn{color:var(--warn)} .kv-neu{color:var(--text)}
+
+/* ── SECTION HEADER ── */
+.sec{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sec h2{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;color:var(--text)}
+.sec h2 i{font-size:15px;color:var(--text3)}
+
+/* ── ALERT BOX ── */
+.alert-box{background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:1rem}
+.alert-box h3{font-size:12px;font-weight:700;color:var(--danger);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.alert-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--danger-border);font-size:13px}
+.alert-item:last-child{border-bottom:none;padding-bottom:0}
+.alert-days{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--danger);color:#fff;white-space:nowrap}
+
+/* ── CAMPANHA PROGRESS ── */
+.camp-list{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:1rem}
+.camp-item{margin-bottom:14px}
+.camp-item:last-child{margin-bottom:0}
+.camp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.camp-name{font-size:13px;font-weight:500}
+.camp-stats{font-size:11px;color:var(--text3)}
+.pbar{height:7px;background:var(--surface2);border-radius:99px;overflow:hidden;border:1px solid var(--border)}
+.pbar-fill{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+
+/* ── PROFISSIONAL CARDS ── */
+.prof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:1rem}
+.prof-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1rem}
+.prof-card-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.prof-name{font-size:13px;font-weight:500}
+.prof-func{font-size:11px;color:var(--text3)}
+.prof-metrics{display:flex;gap:6px;flex-wrap:wrap}
+.prof-chip{font-size:11px;padding:2px 8px;border-radius:999px;font-weight:500}
+
+/* ── TIMELINE / CALENDARIO ── */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:1rem}
+.cal-day{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:5px;min-height:56px}
+.cal-day-label{font-size:10px;color:var(--text3);font-weight:600;margin-bottom:3px}
+.cal-day.today{border-color:var(--accent);background:var(--surface2)}
+.cal-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin:1px}
+.cal-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+.cal-wday{font-size:10px;text-align:center;color:var(--text3);font-weight:600;padding:2px}
+
+/* ── DESVIO BADGE ── */
+.dev-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.dev-ok   {background:var(--ok-bg);   color:var(--ok)}
+.dev-warn {background:var(--warn-bg); color:var(--warn)}
+.dev-late {background:var(--danger-bg);color:var(--danger)}
+.dev-soon {background:var(--info-bg); color:var(--info)}
+.dev-neu  {background:var(--surface2);color:var(--text2)}
+
+/* ── PILLS / BADGES ── */
+.func-pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.fp-foto   {background:#dbeafe;color:#1e3a8a} .fp-design {background:#ede9fe;color:#4c1d95}
+.fp-social {background:#dcfce7;color:#14532d} .fp-video  {background:#ffedd5;color:#7c2d12}
+.fp-trafego{background:#fef9c3;color:#713f12} .fp-copy   {background:#fce7f3;color:#831843}
+@media(prefers-color-scheme:dark){
+  .fp-foto{background:#1e3a5f;color:#93c5fd}.fp-design{background:#2d1b69;color:#c4b5fd}
+  .fp-social{background:#14532d;color:#86efac}.fp-video{background:#431407;color:#fed7aa}
+  .fp-trafego{background:#422006;color:#fde68a}.fp-copy{background:#4a044e;color:#f0abfc}
+}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px}
+.b-entregue {background:var(--ok-bg);   color:var(--ok)}
+.b-andamento{background:var(--warn-bg); color:var(--warn)}
+.b-atrasado {background:var(--danger-bg);color:var(--danger)}
+.b-pendente {background:var(--surface2);color:var(--text2)}
+.b-revisao  {background:var(--info-bg); color:var(--info)}
+.vp-fixo    {background:var(--surface2);color:var(--text2);font-size:10px;padding:1px 6px;border-radius:999px;font-weight:600}
+.vp-free    {background:var(--info-bg); color:var(--info);  font-size:10px;padding:1px 6px;border-radius:999px;font-weight:600}
+
+/* ── FORM ── */
+.form-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;max-width:720px}
+.form-wrap h2{font-size:15px;font-weight:600;margin-bottom:1.25rem;padding-bottom:.9rem;border-bottom:1px solid var(--border)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg.full{grid-column:1/-1}
+.fg label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.fg input,.fg select,.fg textarea{
+  font-size:13px;padding:9px 11px;border-radius:var(--r-sm);
+  border:1px solid var(--border2);background:var(--bg);color:var(--text);
+  font-family:'Inter',sans-serif;transition:border-color .15s,box-shadow .15s
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+.fg textarea{resize:vertical;min-height:68px}
+.form-actions{margin-top:1.25rem;display:flex;gap:8px}
+.toast{display:none;align-items:center;gap:8px;background:var(--ok-bg);color:var(--ok);padding:9px 14px;border-radius:var(--r-sm);font-size:13px;margin-bottom:14px;border:1px solid var(--ok-border)}
+
+/* ── TABLE ── */
+.toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.toolbar select,.toolbar input{font-size:13px;padding:8px 10px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:'Inter',sans-serif}
+.toolbar input{min-width:180px}
+.ml-auto{margin-left:auto}
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead th{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;padding:10px 11px;text-align:left;background:var(--surface2);border-bottom:1px solid var(--border)}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+tbody td{padding:9px 11px;font-size:13px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.del-btn{font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 7px;border-radius:4px}
+.del-btn:hover{color:var(--danger);background:var(--danger-bg)}
+.empty{text-align:center;padding:3rem;color:var(--text3);font-size:13px}
+
+/* ── MODAL SHEETS ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:15px;font-weight:600;margin-bottom:1rem}
+.modal p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:.75rem}
+.modal code{font-size:12px;background:var(--surface2);padding:2px 6px;border-radius:4px;border:1px solid var(--border)}
+.modal ol{padding-left:1.25rem;display:flex;flex-direction:column;gap:6px}
+.modal ol li{font-size:13px;color:var(--text2);line-height:1.5}
+.modal-foot{display:flex;gap:8px;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)}
+.gs-url-input{width:100%;font-size:13px;padding:9px 11px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;margin-top:6px}
+
+/* ── RELATÓRIO ── */
+.rel-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.25rem;margin-bottom:10px}
+.rel-section h3{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+@media print{
+  .nav,.header .gs-badge,.btn,.toolbar .btn,.rel-actions{display:none!important}
+  .page{display:block!important;padding:.5rem}
+  body{background:#fff;color:#000}
+}
+@media(max-width:640px){
+  .form-grid{grid-template-columns:1fr}.fg.full{grid-column:1}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .prof-grid{grid-template-columns:1fr 1fr}
+  thead th:nth-child(5),tbody td:nth-child(5),
+  thead th:nth-child(7),tbody td:nth-child(7){display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></div>
+  <h1>Marketing · Entregáveis</h1>
+  <span class="header-meta" id="hd-meta"></span>
+  <button class="gs-badge" id="gs-btn" onclick="abrirModalSheets()">
+    <span class="gs-dot"></span>
+    <span id="gs-label">Conectar Google Sheets</span>
+  </button>
+</header>
+
+<nav class="nav">
+  <button class="nav-tab active" onclick="goTab('dashboard',this)"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</button>
+  <button class="nav-tab" onclick="goTab('cadastro',this)"><i class="ti ti-plus" aria-hidden="true"></i> Novo entregável</button>
+  <button class="nav-tab" onclick="goTab('lista',this)"><i class="ti ti-list" aria-hidden="true"></i> Lista <span class="nav-badge" id="badge-atrasados" style="display:none">0</span></button>
+  <button class="nav-tab" onclick="goTab('relatorio',this)"><i class="ti ti-file-text" aria-hidden="true"></i> Relatório</button>
+</nav>
+
+<!-- ═══════════════ DASHBOARD ═══════════════ -->
+<div class="page active" id="page-dashboard">
+
+  <!-- KPIs -->
+  <div class="kpi-grid" id="dash-kpis"></div>
+
+  <!-- Alertas -->
+  <div id="dash-alertas"></div>
+
+  <!-- Campanhas + Profissionais -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1rem">
+    <div>
+      <div class="sec"><h2><i class="ti ti-speakerphone" aria-hidden="true"></i> Campanhas</h2></div>
+      <div class="camp-list" id="dash-campanhas"></div>
+    </div>
+    <div>
+      <div class="sec"><h2><i class="ti ti-users" aria-hidden="true"></i> Equipe</h2></div>
+      <div class="prof-grid" id="dash-equipe"></div>
+    </div>
+  </div>
+
+  <!-- Calendário do mês -->
+  <div class="sec"><h2><i class="ti ti-calendar" aria-hidden="true"></i> Prazos do mês</h2></div>
+  <div class="cal-header" id="cal-wdays"></div>
+  <div class="cal-grid" id="dash-cal"></div>
+  <div style="display:flex;gap:12px;margin-bottom:1rem;flex-wrap:wrap">
+    <span style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px"><span class="cal-dot" style="background:var(--ok)"></span>Entregue</span>
+    <span style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px"><span class="cal-dot" style="background:var(--warn)"></span>Em andamento</span>
+    <span style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px"><span class="cal-dot" style="background:var(--danger)"></span>Atrasado</span>
+    <span style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px"><span class="cal-dot" style="background:var(--text3)"></span>Pendente</span>
+  </div>
+</div>
+
+<!-- ═══════════════ CADASTRO ═══════════════ -->
+<div class="page" id="page-cadastro">
+  <div class="form-wrap">
+    <h2>Adicionar entregável</h2>
+    <div id="toast" class="toast"><i class="ti ti-circle-check" aria-hidden="true"></i> Entregável salvo com sucesso!</div>
+    <div class="form-grid">
+      <div class="fg">
+        <label>Função *</label>
+        <select id="f-func">
+          <option value="">Selecione...</option>
+          <option>Fotógrafo</option><option>Design</option><option>Social Media</option>
+          <option>Videomaker</option><option>Tráfego Pago</option><option>Copywriter</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Responsável *</label>
+        <input id="f-resp" type="text" placeholder="Nome do profissional">
+      </div>
+      <div class="fg">
+        <label>Vínculo</label>
+        <select id="f-vinculo"><option value="fixo">Fixo</option><option value="freelancer">Freelancer</option></select>
+      </div>
+      <div class="fg">
+        <label>Campanha / Projeto</label>
+        <input id="f-camp" type="text" placeholder="Ex: Lançamento Aurora">
+      </div>
+      <div class="fg full">
+        <label>Atividade / Entregável *</label>
+        <input id="f-ativ" type="text" placeholder="Descreva claramente o que deve ser entregue">
+      </div>
+      <div class="fg">
+        <label>Prazo *</label>
+        <input id="f-prazo" type="date">
+      </div>
+      <div class="fg">
+        <label>Data de entrega real</label>
+        <input id="f-entrega" type="date">
+      </div>
+      <div class="fg">
+        <label>Status *</label>
+        <select id="f-status">
+          <option value="">Selecione...</option>
+          <option value="pendente">Pendente</option>
+          <option value="andamento">Em andamento</option>
+          <option value="revisao">Em revisão</option>
+          <option value="entregue">Entregue</option>
+          <option value="atrasado">Atrasado</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Prioridade</label>
+        <select id="f-prior"><option value="normal">Normal</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select>
+      </div>
+      <div class="fg full">
+        <label>Observações</label>
+        <textarea id="f-obs" placeholder="Link do Drive, versão, dependências, aprovações..."></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="salvar()"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar entregável</button>
+      <button class="btn btn-ghost" onclick="limpar()">Limpar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ LISTA ═══════════════ -->
+<div class="page" id="page-lista">
+  <div class="kpi-grid" id="lista-kpis"></div>
+  <div class="toolbar">
+    <select id="l-func" onchange="renderLista()"><option value="">Todas as funções</option><option>Fotógrafo</option><option>Design</option><option>Social Media</option><option>Videomaker</option><option>Tráfego Pago</option><option>Copywriter</option></select>
+    <select id="l-status" onchange="renderLista()"><option value="">Todos os status</option><option value="pendente">Pendente</option><option value="andamento">Em andamento</option><option value="revisao">Em revisão</option><option value="entregue">Entregue</option><option value="atrasado">Atrasado</option></select>
+    <select id="l-vinculo" onchange="renderLista()"><option value="">Fixo + Freelancer</option><option value="fixo">Fixo</option><option value="freelancer">Freelancer</option></select>
+    <input id="l-busca" type="text" placeholder="Buscar..." oninput="renderLista()">
+    <div class="ml-auto" style="display:flex;gap:8px">
+      <button class="btn btn-ghost btn-sm" onclick="exportarCSV()"><i class="ti ti-download" aria-hidden="true"></i> CSV</button>
+      <button class="btn btn-primary btn-sm" onclick="goTab('cadastro',document.querySelectorAll('.nav-tab')[1])"><i class="ti ti-plus" aria-hidden="true"></i> Adicionar</button>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th style="width:11%">Função</th>
+        <th style="width:13%">Responsável</th>
+        <th style="width:22%">Entregável</th>
+        <th style="width:10%">Campanha</th>
+        <th style="width:8%">Prazo</th>
+        <th style="width:12%">Desvio</th>
+        <th style="width:12%">Status</th>
+        <th style="width:8%">Vínculo</th>
+        <th style="width:4%"></th>
+      </tr></thead>
+      <tbody id="lista-body"></tbody>
+    </table>
+    <div id="lista-empty" class="empty" style="display:none"><i class="ti ti-clipboard-x" style="font-size:24px;display:block;margin-bottom:8px" aria-hidden="true"></i>Nenhum entregável encontrado.</div>
+  </div>
+</div>
+
+<!-- ═══════════════ RELATÓRIO ═══════════════ -->
+<div class="page" id="page-relatorio">
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="gerarRelatorio()"><i class="ti ti-refresh" aria-hidden="true"></i> Atualizar</button>
+    <button class="btn btn-ghost" onclick="window.print()"><i class="ti ti-printer" aria-hidden="true"></i> Imprimir / PDF</button>
+    <button class="btn btn-ghost" onclick="exportarCSV()"><i class="ti ti-download" aria-hidden="true"></i> Exportar CSV</button>
+  </div>
+  <div id="rel-content"></div>
+</div>
+
+<!-- ═══════════════ MODAL GOOGLE SHEETS ═══════════════ -->
+<div class="modal-bg" id="modal-sheets">
+  <div class="modal">
+    <h2><i class="ti ti-brand-google" aria-hidden="true" style="font-size:18px;vertical-align:-2px;margin-right:6px"></i>Integração Google Sheets</h2>
+    <p>Para compartilhar dados com sua equipe em tempo real, conecte o app a uma planilha do Google Sheets via <strong>Apps Script</strong>. Siga os passos:</p>
+    <ol>
+      <li>Abra o <a href="https://sheets.new" target="_blank" style="color:var(--info)">Google Sheets</a> e crie uma planilha nova</li>
+      <li>No menu, vá em <strong>Extensões → Apps Script</strong></li>
+      <li>Cole o código do script disponível <a href="#" style="color:var(--info)">neste modelo</a> e salve</li>
+      <li>Clique em <strong>Implantar → Nova implantação</strong> → tipo <code>App da Web</code></li>
+      <li>Em "Quem tem acesso", selecione <strong>Qualquer pessoa</strong> e implante</li>
+      <li>Copie a URL gerada e cole abaixo:</li>
+    </ol>
+    <input class="gs-url-input" id="gs-url" type="url" placeholder="https://script.google.com/macros/s/..." value="">
+    <p style="margin-top:.75rem;font-size:12px;color:var(--text3)">Sem a integração o app funciona normalmente, salvando dados localmente no navegador.</p>
+    <div class="modal-foot">
+      <button class="btn btn-primary" onclick="salvarGS()"><i class="ti ti-link" aria-hidden="true"></i> Conectar</button>
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="desconectarGS()">Desconectar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════ DADOS & CONFIG ═══════════
+const FUNCS=["Fotógrafo","Design","Social Media","Videomaker","Tráfego Pago","Copywriter"];
+const SC={
+  entregue: {label:"Entregue",   cls:"b-entregue", icon:"ti-circle-check"},
+  andamento:{label:"Em andamento",cls:"b-andamento",icon:"ti-loader"},
+  atrasado: {label:"Atrasado",   cls:"b-atrasado", icon:"ti-alert-circle"},
+  revisao:  {label:"Em revisão", cls:"b-revisao",  icon:"ti-eye"},
+  pendente: {label:"Pendente",   cls:"b-pendente", icon:"ti-clock"},
+};
+const FP={"Fotógrafo":"fp-foto","Design":"fp-design","Social Media":"fp-social","Videomaker":"fp-video","Tráfego Pago":"fp-trafego","Copywriter":"fp-copy"};
+const AV_COLORS=["#6366f1","#0ea5e9","#10b981","#f59e0b","#ef4444","#8b5cf6","#ec4899","#14b8a6"];
+
+let dados=JSON.parse(localStorage.getItem('mkt_v2')||'null')||[
+  {id:1,func:"Fotógrafo",resp:"Carlos Lima",vinculo:"freelancer",ativ:"Fotos fachada Empreendimento Aurora",prazo:"2026-06-10",entrega:"2026-06-10",status:"entregue",camp:"Aurora",prior:"normal",obs:"32 fotos no Drive"},
+  {id:2,func:"Fotógrafo",resp:"Carlos Lima",vinculo:"freelancer",ativ:"Fotos internas apartamento decorado",prazo:"2026-06-22",entrega:"",status:"andamento",camp:"Aurora",prior:"alta",obs:"Sessão agendada"},
+  {id:3,func:"Design",resp:"Ana Souza",vinculo:"fixo",ativ:"Banner digital lançamento Aurora",prazo:"2026-06-12",entrega:"2026-06-12",status:"entregue",camp:"Aurora",prior:"normal",obs:"Aprovado"},
+  {id:4,func:"Design",resp:"Ana Souza",vinculo:"fixo",ativ:"Kit materiais impressos flyer + folder",prazo:"2026-06-20",entrega:"",status:"revisao",camp:"Aurora",prior:"alta",obs:"v2 enviada"},
+  {id:5,func:"Design",resp:"Ana Souza",vinculo:"fixo",ativ:"Identidade visual campanha Julho",prazo:"2026-06-28",entrega:"",status:"pendente",camp:"Julho",prior:"normal",obs:"Aguarda briefing"},
+  {id:6,func:"Social Media",resp:"Julia Ramos",vinculo:"fixo",ativ:"Grid Instagram 12 posts Junho",prazo:"2026-06-01",entrega:"2026-06-01",status:"entregue",camp:"Junho",prior:"normal",obs:"Agendados"},
+  {id:7,func:"Social Media",resp:"Julia Ramos",vinculo:"fixo",ativ:"Stories enquetes semana 3",prazo:"2026-06-16",entrega:"2026-06-15",status:"entregue",camp:"Junho",prior:"normal",obs:"Publicado"},
+  {id:8,func:"Social Media",resp:"Julia Ramos",vinculo:"fixo",ativ:"Planejamento editorial Julho",prazo:"2026-06-28",entrega:"",status:"pendente",camp:"Julho",prior:"normal",obs:"Depende do design"},
+  {id:9,func:"Videomaker",resp:"Pedro Alves",vinculo:"freelancer",ativ:"Vídeo institucional 90s Aurora",prazo:"2026-06-08",entrega:"",status:"atrasado",camp:"Aurora",prior:"urgente",obs:"Retrabalho na edição"},
+  {id:10,func:"Videomaker",resp:"Pedro Alves",vinculo:"freelancer",ativ:"Reels obra 3 vídeos curtos",prazo:"2026-06-15",entrega:"2026-06-14",status:"entregue",camp:"Orgânico",prior:"normal",obs:"Publicados"},
+  {id:11,func:"Videomaker",resp:"Pedro Alves",vinculo:"freelancer",ativ:"Tour virtual 360 apartamento",prazo:"2026-06-30",entrega:"",status:"pendente",camp:"Aurora",prior:"alta",obs:"Aguarda fotos"},
+  {id:12,func:"Tráfego Pago",resp:"Marcos Viana",vinculo:"fixo",ativ:"Campanha Meta Ads Aurora",prazo:"2026-06-13",entrega:"2026-06-13",status:"entregue",camp:"Aurora",prior:"normal",obs:"CTR 2,4%"},
+  {id:13,func:"Tráfego Pago",resp:"Marcos Viana",vinculo:"fixo",ativ:"Relatório quinzenal performance",prazo:"2026-06-14",entrega:"",status:"atrasado",camp:"",prior:"alta",obs:"Prazo vencido"},
+  {id:14,func:"Copywriter",resp:"Fernanda Costa",vinculo:"freelancer",ativ:"Roteiro vídeo institucional",prazo:"2026-06-05",entrega:"2026-06-05",status:"entregue",camp:"Aurora",prior:"normal",obs:"Aprovado 1ª revisão"},
+  {id:15,func:"Copywriter",resp:"Fernanda Costa",vinculo:"freelancer",ativ:"Textos landing page Aurora",prazo:"2026-06-19",entrega:"",status:"revisao",camp:"Aurora",prior:"alta",obs:"Rev. jurídica"},
+  {id:16,func:"Copywriter",resp:"Fernanda Costa",vinculo:"freelancer",ativ:"Posts blog SEO Julho",prazo:"2026-06-25",entrega:"",status:"andamento",camp:"Julho",prior:"normal",obs:"3 artigos"},
+];
+let nextId=dados.reduce((m,d)=>Math.max(m,d.id),0)+1;
+let gsUrl=localStorage.getItem('mkt_gs_url')||'';
+
+function save(){localStorage.setItem('mkt_v2',JSON.stringify(dados));}
+
+// ═══════════ DESVIO ═══════════
+function desvio(d){
+  const hoje=new Date(); hoje.setHours(0,0,0,0);
+  const prazo=new Date(d.prazo+'T00:00:00');
+  if(d.status==='entregue'&&d.entrega){
+    const ent=new Date(d.entrega+'T00:00:00');
+    const diff=Math.round((prazo-ent)/(1000*60*60*24));
+    if(diff>0) return{txt:`+${diff}d adiantado`,cls:'dev-ok',v:diff};
+    if(diff===0) return{txt:'No prazo',cls:'dev-neu',v:0};
+    return{txt:`${diff}d de atraso`,cls:'dev-late',v:diff};
+  }
+  if(d.status==='entregue') return{txt:'No prazo',cls:'dev-neu',v:0};
+  const diff=Math.round((prazo-hoje)/(1000*60*60*24));
+  if(diff<0) return{txt:`${Math.abs(diff)}d atrasado`,cls:'dev-late',v:diff};
+  if(diff===0) return{txt:'Vence hoje',cls:'dev-warn',v:0};
+  if(diff<=3) return{txt:`Vence em ${diff}d`,cls:'dev-soon',v:diff};
+  return{txt:`${diff}d restantes`,cls:'dev-neu',v:diff};
+}
+
+function fmt(d){if(!d)return'—';const[y,m,di]=d.split('-');return`${di}/${m}`;}
+function initials(n){return n.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();}
+
+// ═══════════ TABS ═══════════
+function goTab(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  if(id==='lista')renderLista();
+  if(id==='relatorio')gerarRelatorio();
+  if(id==='dashboard')renderDashboard();
+}
+
+// ═══════════ DASHBOARD ═══════════
+function renderDashboard(){
+  const hoje=new Date(); hoje.setHours(0,0,0,0);
+  const tot=dados.length;
+  const ok=dados.filter(d=>d.status==='entregue').length;
+  const late=dados.filter(d=>d.status==='atrasado').length;
+  const prog=dados.filter(d=>d.status==='andamento'||d.status==='revisao').length;
+  const criticos=dados.filter(d=>{
+    if(d.status==='entregue')return false;
+    const p=new Date(d.prazo+'T00:00:00');
+    return Math.round((p-hoje)/(86400000))<=2;
+  }).length;
+  const taxa=tot?Math.round(ok/tot*100):0;
+
+  document.getElementById('dash-kpis').innerHTML=[
+    ['Total de itens',tot,'kv-neu',taxa+'%'],
+    ['Entregues',ok,'kv-ok','taxa '+taxa+'%'],
+    ['Em andamento',prog,'kv-warn',''],
+    ['Atrasados',late,'kv-late','requer ação'],
+    ['Críticos (≤2d)',criticos,'kv-warn','vence em breve'],
+    ['Taxa de entrega',taxa+'%','kv-ok',ok+' de '+tot+' itens'],
+  ].map(([l,v,c,s])=>`<div class="kpi"><div class="kpi-label">${l}</div><div class="kpi-value ${c}">${v}</div>${s?`<div class="kpi-sub">${s}</div>`:''}</div>`).join('');
+
+  // Alertas (atrasados + vencendo em 3d)
+  const alertas=dados.filter(d=>{
+    if(d.status==='entregue')return false;
+    const p=new Date(d.prazo+'T00:00:00');
+    const diff=Math.round((p-hoje)/86400000);
+    return diff<=3;
+  }).sort((a,b)=>new Date(a.prazo)-new Date(b.prazo));
+
+  if(alertas.length){
+    document.getElementById('dash-alertas').innerHTML=`<div class="alert-box">
+      <h3><i class="ti ti-alert-triangle" aria-hidden="true"></i> Atenção imediata — ${alertas.length} ite${alertas.length>1?'ns':'m'}</h3>
+      ${alertas.map(d=>{
+        const dv=desvio(d);
+        return`<div class="alert-item">
+          <span class="func-pill ${FP[d.func]||''}">${d.func}</span>
+          <span style="flex:1;font-weight:500">${d.ativ}</span>
+          <span style="font-size:12px;color:var(--text2)">${d.resp}</span>
+          <span class="alert-days">${dv.txt}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+  } else {
+    document.getElementById('dash-alertas').innerHTML=`<div style="background:var(--ok-bg);border:1px solid var(--ok-border);border-radius:var(--r);padding:.75rem 1.1rem;margin-bottom:1rem;font-size:13px;color:var(--ok);display:flex;align-items:center;gap:8px"><i class="ti ti-circle-check" aria-hidden="true"></i> Nenhum item crítico nos próximos 3 dias.</div>`;
+  }
+
+  // Campanhas
+  const camps=[...new Set(dados.map(d=>d.camp).filter(Boolean))];
+  document.getElementById('dash-campanhas').innerHTML=camps.map(c=>{
+    const itens=dados.filter(d=>d.camp===c);
+    const ent=itens.filter(d=>d.status==='entregue').length;
+    const pct=Math.round(ent/itens.length*100);
+    const cor=pct>=80?'var(--ok)':pct>=50?'var(--warn)':'var(--danger)';
+    return`<div class="camp-item">
+      <div class="camp-header">
+        <span class="camp-name">${c}</span>
+        <span class="camp-stats">${ent}/${itens.length} · ${pct}%</span>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${cor}"></div></div>
+    </div>`;
+  }).join('')||'<p style="font-size:13px;color:var(--text3)">Nenhuma campanha cadastrada.</p>';
+
+  // Equipe
+  const profs=[...new Set(dados.map(d=>d.resp))];
+  document.getElementById('dash-equipe').innerHTML=profs.map((p,i)=>{
+    const itens=dados.filter(d=>d.resp===p);
+    const ent=itens.filter(d=>d.status==='entregue').length;
+    const lat=itens.filter(d=>d.status==='atrasado').length;
+    const fn=dados.find(d=>d.resp===p)?.func||'';
+    const vn=dados.find(d=>d.resp===p)?.vinculo||'fixo';
+    const cor=AV_COLORS[i%AV_COLORS.length];
+    return`<div class="prof-card">
+      <div class="prof-card-top">
+        <div class="avatar" style="background:${cor}22;color:${cor}">${initials(p)}</div>
+        <div><div class="prof-name">${p}</div><div class="prof-func">${fn}</div></div>
+      </div>
+      <div class="prof-metrics">
+        <span class="prof-chip" style="background:var(--surface2);color:var(--text2)">${itens.length} itens</span>
+        <span class="prof-chip" style="background:var(--ok-bg);color:var(--ok)">${ent} ok</span>
+        ${lat?`<span class="prof-chip" style="background:var(--danger-bg);color:var(--danger)">${lat} atras.</span>`:''}
+        <span class="${vn==='freelancer'?'vp-free':'vp-fixo'}">${vn==='freelancer'?'Freelancer':'Fixo'}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Calendário
+  renderCalendario();
+
+  // Badge nav
+  const nb=document.getElementById('badge-atrasados');
+  if(late>0){nb.textContent=late;nb.style.display='';}else{nb.style.display='none';}
+
+  // Header meta
+  document.getElementById('hd-meta').textContent=`${dados.length} entregáveis · ${new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`;
+}
+
+function renderCalendario(){
+  const hoje=new Date(); hoje.setHours(0,0,0,0);
+  const ano=hoje.getFullYear(), mes=hoje.getMonth();
+  const primeiroDia=new Date(ano,mes,1).getDay();
+  const diasNoMes=new Date(ano,mes+1,0).getDate();
+  const wdays=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  document.getElementById('cal-wdays').innerHTML=wdays.map(w=>`<div class="cal-wday">${w}</div>`).join('');
+
+  let html='';
+  for(let i=0;i<primeiroDia;i++) html+=`<div class="cal-day"></div>`;
+  for(let d=1;d<=diasNoMes;d++){
+    const data=new Date(ano,mes,d);
+    const isHoje=data.getTime()===hoje.getTime();
+    const dateStr=`${ano}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const itensHoje=dados.filter(item=>item.prazo===dateStr);
+    const dots=itensHoje.map(item=>{
+      const cor=item.status==='entregue'?'var(--ok)':item.status==='atrasado'?'var(--danger)':item.status==='andamento'||item.status==='revisao'?'var(--warn)':'var(--text3)';
+      return`<span class="cal-dot" style="background:${cor}" title="${item.ativ}"></span>`;
+    }).join('');
+    html+=`<div class="cal-day${isHoje?' today':''}">
+      <div class="cal-day-label" style="${isHoje?'color:var(--info);font-weight:700':''}">
+        ${isHoje?'<i class="ti ti-point-filled" style="font-size:8px;vertical-align:0;margin-right:2px" aria-hidden="true"></i>':''}${d}
+      </div>
+      ${dots}
+    </div>`;
+  }
+  document.getElementById('dash-cal').innerHTML=html;
+}
+
+// ═══════════ LISTA ═══════════
+function renderLista(){
+  const ff=document.getElementById('l-func').value;
+  const fs=document.getElementById('l-status').value;
+  const fv=document.getElementById('l-vinculo').value;
+  const fb=document.getElementById('l-busca').value.toLowerCase();
+  const fil=dados.filter(d=>{
+    if(ff&&d.func!==ff)return false;
+    if(fs&&d.status!==fs)return false;
+    if(fv&&d.vinculo!==fv)return false;
+    if(fb&&!d.ativ.toLowerCase().includes(fb)&&!d.resp.toLowerCase().includes(fb)&&!(d.camp||'').toLowerCase().includes(fb))return false;
+    return true;
+  });
+  const tot=fil.length,ok=fil.filter(d=>d.status==='entregue').length,late=fil.filter(d=>d.status==='atrasado').length,prog=fil.filter(d=>d.status==='andamento'||d.status==='revisao').length;
+  document.getElementById('lista-kpis').innerHTML=[
+    ['Total',tot,'kv-neu'],['Entregues',ok,'kv-ok'],['Em andamento',prog,'kv-warn'],
+    ['Atrasados',late,'kv-late'],['Taxa',tot?Math.round(ok/tot*100)+'%':'—','kv-ok']
+  ].map(([l,v,c])=>`<div class="kpi"><div class="kpi-label">${l}</div><div class="kpi-value ${c}">${v}</div></div>`).join('');
+  const tbody=document.getElementById('lista-body');
+  tbody.innerHTML='';
+  document.getElementById('lista-empty').style.display=fil.length?'none':'block';
+  fil.forEach(d=>{
+    const sc=SC[d.status],dv=desvio(d);
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><span class="func-pill ${FP[d.func]||''}">${d.func}</span></td>
+      <td title="${d.resp}">${d.resp}</td>
+      <td title="${d.ativ}" style="font-weight:500">${d.ativ}</td>
+      <td style="font-size:12px;color:var(--text2)">${d.camp||'—'}</td>
+      <td style="font-size:12px">${fmt(d.prazo)}</td>
+      <td><span class="dev-badge ${dv.cls}">${dv.txt}</span></td>
+      <td><span class="badge ${sc.cls}"><i class="ti ${sc.icon}" aria-hidden="true" style="font-size:11px"></i> ${sc.label}</span></td>
+      <td><span class="${d.vinculo==='freelancer'?'vp-free':'vp-fixo'}">${d.vinculo==='freelancer'?'Freelancer':'Fixo'}</span></td>
+      <td><button class="del-btn" onclick="deletar(${d.id})" title="Remover"><i class="ti ti-trash" aria-hidden="true"></i></button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ═══════════ CADASTRO ═══════════
+function limpar(){
+  ['f-func','f-resp','f-vinculo','f-ativ','f-prazo','f-entrega','f-status','f-camp','f-prior','f-obs'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el.tagName==='SELECT')el.selectedIndex=0; else el.value='';
+  });
+}
+function salvar(){
+  const func=document.getElementById('f-func').value;
+  const resp=document.getElementById('f-resp').value.trim();
+  const ativ=document.getElementById('f-ativ').value.trim();
+  const prazo=document.getElementById('f-prazo').value;
+  const status=document.getElementById('f-status').value;
+  if(!func||!resp||!ativ||!prazo||!status){alert('Preencha os campos obrigatórios (*)');return;}
+  const novo={
+    id:nextId++, func, resp,
+    vinculo:document.getElementById('f-vinculo').value,
+    ativ, prazo,
+    entrega:document.getElementById('f-entrega').value,
+    status,
+    camp:document.getElementById('f-camp').value.trim(),
+    prior:document.getElementById('f-prior').value,
+    obs:document.getElementById('f-obs').value.trim()
+  };
+  dados.push(novo);
+  save();
+  if(gsUrl) syncGS(novo);
+  limpar();
+  const t=document.getElementById('toast');
+  t.style.display='flex';
+  setTimeout(()=>t.style.display='none',2500);
+  renderDashboard();
+}
+function deletar(id){
+  if(!confirm('Remover este entregável?'))return;
+  dados=dados.filter(d=>d.id!==id);
+  save();
+  renderLista();
+  renderDashboard();
+}
+
+// ═══════════ RELATÓRIO ═══════════
+function gerarRelatorio(){
+  const now=new Date();
+  const tot=dados.length,ok=dados.filter(d=>d.status==='entregue').length;
+  const late=dados.filter(d=>d.status==='atrasado').length;
+  const prog=dados.filter(d=>d.status==='andamento'||d.status==='revisao').length;
+  const pend=dados.filter(d=>d.status==='pendente').length;
+  const taxa=tot?Math.round(ok/tot*100):0;
+
+  const funcRows=FUNCS.map(f=>{
+    const it=dados.filter(d=>d.func===f); if(!it.length)return'';
+    const e=it.filter(d=>d.status==='entregue').length;
+    const p=Math.round(e/it.length*100);
+    const cor=p>=80?'var(--ok)':p>=50?'var(--warn)':'var(--danger)';
+    return`<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span class="func-pill ${FP[f]||''}">${f}</span>
+        <span style="font-size:12px;font-weight:600;color:${cor}">${e}/${it.length} · ${p}%</span>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${p}%;background:${cor}"></div></div>
+    </div>`;
+  }).join('');
+
+  const atrasados=dados.filter(d=>d.status==='atrasado');
+  document.getElementById('rel-content').innerHTML=`
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:12px">
+      <h2 style="font-size:16px;font-weight:700;margin-bottom:4px">Relatório de entregáveis — Marketing</h2>
+      <p style="font-size:13px;color:var(--text2)">Gerado em ${now.toLocaleDateString('pt-BR')} às ${now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})} · ${tot} entregáveis</p>
+    </div>
+    <div class="kpi-grid">
+      ${[['Total',tot,'kv-neu'],['Entregues',ok,'kv-ok'],['Em andamento',prog,'kv-warn'],['Atrasados',late,'kv-late'],['Pendentes',pend,'kv-neu'],['Taxa',taxa+'%','kv-ok']].map(([l,v,c])=>`<div class="kpi"><div class="kpi-label">${l}</div><div class="kpi-value ${c}">${v}</div></div>`).join('')}
+    </div>
+    <div class="rel-section"><h3>Entrega por função</h3>${funcRows}</div>
+    <div class="rel-section">
+      <h3>Itens atrasados (${atrasados.length})</h3>
+      ${atrasados.length?atrasados.map(d=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span class="func-pill ${FP[d.func]||''}">${d.func}</span>
+        <span style="flex:1;font-size:13px;font-weight:500">${d.ativ}</span>
+        <span style="font-size:12px;color:var(--text2)">${d.resp}</span>
+        <span class="dev-badge dev-late">${desvio(d).txt}</span>
+      </div>`).join(''):`<p style="font-size:13px;color:var(--ok)">✓ Nenhum item atrasado.</p>`}
+    </div>
+    <div class="rel-section">
+      <h3>Todos os entregáveis</h3>
+      <div style="overflow-x:auto">
+        <table style="font-size:12px">
+          <thead><tr>
+            <th style="width:11%">Função</th><th style="width:13%">Responsável</th>
+            <th style="width:24%">Atividade</th><th style="width:10%">Campanha</th>
+            <th style="width:8%">Prazo</th><th style="width:11%">Desvio</th>
+            <th style="width:11%">Status</th><th style="width:8%">Vínculo</th>
+          </tr></thead>
+          <tbody>${dados.map(d=>{
+            const sc=SC[d.status],dv=desvio(d);
+            return`<tr>
+              <td><span class="func-pill ${FP[d.func]||''}">${d.func}</span></td>
+              <td>${d.resp}</td><td style="font-weight:500;white-space:normal">${d.ativ}</td>
+              <td style="color:var(--text2)">${d.camp||'—'}</td>
+              <td>${fmt(d.prazo)}</td>
+              <td><span class="dev-badge ${dv.cls}">${dv.txt}</span></td>
+              <td><span class="badge ${sc.cls}">${sc.label}</span></td>
+              <td><span class="${d.vinculo==='freelancer'?'vp-free':'vp-fixo'}">${d.vinculo==='freelancer'?'Freelancer':'Fixo'}</span></td>
+            </tr>`;
+          }).join('')}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+// ═══════════ CSV ═══════════
+function exportarCSV(){
+  const h='Função,Responsável,Vínculo,Atividade,Campanha,Prazo,Entrega Real,Status,Desvio,Prioridade,Obs.\n';
+  const r=dados.map(d=>[d.func,d.resp,d.vinculo,`"${d.ativ}"`,d.camp||'',fmt(d.prazo),fmt(d.entrega),SC[d.status].label,desvio(d).txt,d.prior||'',`"${d.obs||''}"`].join(',')).join('\n');
+  const b=new Blob(['\uFEFF'+h+r],{type:'text/csv;charset=utf-8'});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement('a');a.href=u;a.download='entregaveis_marketing.csv';a.click();URL.revokeObjectURL(u);
+}
+
+// ═══════════ GOOGLE SHEETS ═══════════
+function abrirModalSheets(){
+  document.getElementById('gs-url').value=gsUrl||'';
+  document.getElementById('modal-sheets').classList.add('open');
+}
+function fecharModal(){document.getElementById('modal-sheets').classList.remove('open');}
+function salvarGS(){
+  const url=document.getElementById('gs-url').value.trim();
+  gsUrl=url;
+  localStorage.setItem('mkt_gs_url',url);
+  atualizarBadgeGS();
+  fecharModal();
+}
+function desconectarGS(){
+  gsUrl='';localStorage.removeItem('mkt_gs_url');
+  atualizarBadgeGS();fecharModal();
+}
+function atualizarBadgeGS(){
+  const btn=document.getElementById('gs-btn');
+  const lbl=document.getElementById('gs-label');
+  if(gsUrl){btn.classList.add('connected');lbl.textContent='Sheets conectado';}
+  else{btn.classList.remove('connected');lbl.textContent='Conectar Google Sheets';}
+}
+async function syncGS(item){
+  if(!gsUrl)return;
+  try{
+    // no-cors: navegador não lê a resposta mas o Apps Script recebe e grava
+    await fetch(gsUrl,{
+      method:'POST',
+      mode:'no-cors',
+      body:JSON.stringify(item),
+      headers:{'Content-Type':'text/plain'}
+    });
+  }catch(e){console.warn('Sheets sync falhou:',e);}
+}
+
+// ═══════════ INIT ═══════════
+atualizarBadgeGS();
+renderDashboard();
+</script>
+</body>
+</html>
