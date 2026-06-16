@@ -656,6 +656,7 @@ function deletar(id){
   if(!confirm('Remover este entregável?'))return;
   dados=dados.filter(d=>d.id!==id);
   save();
+  deletarGS(id);
   renderLista();
   renderDashboard();
 }
@@ -750,6 +751,7 @@ function salvarGS(){
   localStorage.setItem('mkt_gs_url',url);
   atualizarBadgeGS();
   fecharModal();
+  if(gsUrl) carregarDoSheets();
 }
 function desconectarGS(){
   gsUrl='';localStorage.removeItem('mkt_gs_url');
@@ -761,10 +763,42 @@ function atualizarBadgeGS(){
   if(gsUrl){btn.classList.add('connected');lbl.textContent='Sheets conectado';}
   else{btn.classList.remove('connected');lbl.textContent='Conectar Google Sheets';}
 }
+
+// Carrega dados da planilha — SEMPRE busca da fonte, ignora cache local
+async function carregarDoSheets(){
+  if(!gsUrl)return;
+  try{
+    document.getElementById('hd-meta').textContent='⟳ Sincronizando...';
+    const resp=await fetch(gsUrl+'?nocache='+Date.now(),{cache:'no-store'});
+    const json=await resp.json();
+    if(Array.isArray(json)&&json.length>0){
+      dados=json.map(d=>({
+        id:     Number(d.id)||d.id,
+        func:   d.func||'',
+        resp:   d.resp||'',
+        vinculo:d.vinculo||'fixo',
+        ativ:   d.ativ||'',
+        camp:   d.camp||'',
+        prazo:  d.prazo?String(d.prazo).substring(0,10):'',
+        entrega:d.entrega?String(d.entrega).substring(0,10):'',
+        status: d.status||'pendente',
+        prior:  d.prior||'normal',
+        obs:    d.obs||''
+      }));
+      nextId=dados.reduce((m,d)=>Math.max(m,Number(d.id)||0),0)+1;
+      save();
+    }
+    renderDashboard();
+    if(document.getElementById('page-lista').classList.contains('active')) renderLista();
+  }catch(err){
+    console.warn('Erro ao carregar Sheets:',err);
+    renderDashboard();
+  }
+}
+
 async function syncGS(item){
   if(!gsUrl)return;
   try{
-    // no-cors: navegador não lê a resposta mas o Apps Script recebe e grava
     await fetch(gsUrl,{
       method:'POST',
       mode:'no-cors',
@@ -774,9 +808,27 @@ async function syncGS(item){
   }catch(e){console.warn('Sheets sync falhou:',e);}
 }
 
+async function deletarGS(id){
+  if(!gsUrl)return;
+  try{
+    await fetch(gsUrl,{
+      method:'POST',
+      mode:'no-cors',
+      body:JSON.stringify({action:'delete',id}),
+      headers:{'Content-Type':'text/plain'}
+    });
+  }catch(e){console.warn('Delete GS falhou:',e);}
+}
+
 // ═══════════ INIT ═══════════
+// URL pré-configurada — sempre usa esta URL
+gsUrl='https://script.google.com/macros/s/AKfycbxUcdF3U9vAk2VH4x0F-Q-JwJsbybn_Iv_bdibf9P84kGQyRtPGm6SKTc7m8JjHgOgS/exec';
+localStorage.setItem('mkt_gs_url',gsUrl);
 atualizarBadgeGS();
-renderDashboard();
+// Sempre carrega da planilha ao abrir — nunca usa dados em cache
+carregarDoSheets();
+// Auto-refresh a cada 60 segundos
+setInterval(()=>carregarDoSheets(), 60000);
 </script>
 </body>
 </html>
