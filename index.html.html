@@ -679,13 +679,18 @@ async function carregarDoSheets(){
     const json=await resp.json();
     if(Array.isArray(json)&&json.length>0){
       dados=json.map(d=>({
-        id:Number(d.id)||Number(d.id),
-        func:d.func||'',resp:d.resp||'',vinculo:d.vinculo||'fixo',
-        ativ:d.ativ||'',camp:d.camp||'',
-        prazo:d.prazo?String(d.prazo).substring(0,10):'',
-        entrega:(d.entrega||d.conclusao||d.data_entrega||'')?String(d.entrega||d.conclusao||d.data_entrega||'').substring(0,10):'',
-        status:d.status||'pendente',prior:d.prior||'normal',
-        link:d.link||'',obs:d.obs||''
+        id:Number(d.id||d.ID||d.Id)||0,
+        func:d.func||d['Função']||d.Funcao||'',
+        resp:d.resp||d['Responsável']||d.Responsavel||'',
+        vinculo:d.vinculo||d['Vínculo']||d.Vinculo||'fixo',
+        ativ:d.ativ||d.Atividade||d['Atividade']||'',
+        camp:d.camp||d.Campanha||d['Campanha']||'',
+        prazo:(d.prazo||d.Prazo||'')?String(d.prazo||d.Prazo||'').substring(0,10):'',
+        entrega:(d.entrega||d['Entrega Real']||d.EntregaReal||d.conclusao||'')?String(d.entrega||d['Entrega Real']||d.EntregaReal||d.conclusao||'').substring(0,10):'',
+        status:(d.status||d.Status||'pendente').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace('andamento','andamento').replace('revisao','revisao').replace('atrasado','atrasado').replace('entregue','entregue').replace('pendente','pendente'),
+        prior:(d.prior||d.Prioridade||'normal').toLowerCase(),
+        link:d.link||d.Link||'',
+        obs:d.obs||d['Observações']||d.Observacoes||''
       }));
       nextId=dados.reduce((m,d)=>Math.max(m,Number(d.id)||0),0)+1;
       saveLocal();populateFilterSelects();
@@ -696,24 +701,53 @@ async function carregarDoSheets(){
 async function syncGS(item){
   if(!gsUrl)return;
   const lbl=document.getElementById('gs-label');
+  const btn=document.getElementById('gs-btn');
   try{
-    if(lbl){lbl.textContent='⟳ Salvando...';document.getElementById('gs-btn').classList.remove('connected');}
-    // Encode as URL param to avoid CORS preflight issues
-    const payload=encodeURIComponent(JSON.stringify(item));
-    await fetch(gsUrl+'?data='+payload,{mode:'no-cors',cache:'no-store'});
-    if(lbl){lbl.textContent='✓ Salvo!';document.getElementById('gs-btn').classList.add('connected');}
-    setTimeout(()=>{if(lbl)lbl.textContent='Sheets conectado';},2000);
+    if(lbl)lbl.textContent='⟳ Salvando...';
+    // Monta objeto com nomes de campo da planilha
+    const mapped={
+      ID:item.id, id:item.id,
+      'Função':item.func, func:item.func,
+      'Responsável':item.resp, resp:item.resp,
+      'Vínculo':item.vinculo, vinculo:item.vinculo,
+      Atividade:item.ativ, ativ:item.ativ,
+      Campanha:item.camp, camp:item.camp,
+      Prazo:item.prazo, prazo:item.prazo,
+      'Entrega Real':item.entrega, entrega:item.entrega,
+      Status:item.status, status:item.status,
+      Prioridade:item.prior, prior:item.prior,
+      Link:item.link, link:item.link,
+      'Observações':item.obs, obs:item.obs,
+      action:item.action
+    };
+    const payload=encodeURIComponent(JSON.stringify(mapped));
+    // Tenta com CORS completo primeiro (funciona quando Apps Script está configurado)
+    const resp=await fetch(gsUrl+'?data='+payload,{cache:'no-store'});
+    const txt=await resp.text();
+    if(lbl){lbl.textContent='✓ Salvo!';btn.classList.add('connected');}
+    setTimeout(()=>{if(lbl)lbl.textContent='Sheets conectado';},1500);
+    setTimeout(()=>carregarDoSheets(),2000);
   }catch(e){
-    console.warn('Sync:',e);
-    if(lbl)lbl.textContent='Sheets conectado';
+    // fallback no-cors (quando GitHub Pages envia requisição cross-origin)
+    try{
+      const payload=encodeURIComponent(JSON.stringify(item));
+      await fetch(gsUrl+'?data='+payload,{mode:'no-cors',cache:'no-store'});
+      if(lbl)lbl.textContent='Sheets conectado';
+      setTimeout(()=>carregarDoSheets(),3000);
+    }catch(e2){console.warn('Sync falhou:',e2);}
   }
 }
 async function deletarGS(id){
   if(!gsUrl)return;
   try{
     const payload=encodeURIComponent(JSON.stringify({action:'delete',id}));
-    await fetch(gsUrl+'?data='+payload,{mode:'no-cors',cache:'no-store'});
-  }catch(e){console.warn('Del:',e);}
+    await fetch(gsUrl+'?data='+payload,{cache:'no-store'});
+  }catch(e){
+    try{
+      const payload=encodeURIComponent(JSON.stringify({action:'delete',id}));
+      await fetch(gsUrl+'?data='+payload,{mode:'no-cors',cache:'no-store'});
+    }catch(e2){console.warn('Del falhou:',e2);}
+  }
 }
 document.getElementById('modal-edicao').addEventListener('click',function(e){if(e.target===this)fecharModalEdicao();});
 document.getElementById('modal-sheets').addEventListener('click',function(e){if(e.target===this)fecharModalSheets();});
