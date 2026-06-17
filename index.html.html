@@ -350,7 +350,7 @@ tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;
   </div>
   <div class="tbl-wrap">
     <table><thead><tr>
-      <th style="width:11%">Função</th><th style="width:12%">Responsável</th><th style="width:20%">Entregável</th>
+      <th style="width:11%">Função</th><th style="width:12%">Responsável</th><th style="width:19%">Entregável</th>
       <th style="width:9%">Campanha</th><th style="width:7%">Prazo</th><th style="width:7%">Entregue</th><th style="width:10%">Desvio</th>
       <th style="width:11%">Status</th><th style="width:7%">Prior.</th><th style="width:5%"></th>
     </tr></thead><tbody id="lista-body"></tbody></table>
@@ -590,7 +590,8 @@ function renderLista(){
   const tot=fil.length,ok=fil.filter(d=>d.status==='entregue').length,late=fil.filter(d=>d.status==='atrasado').length,prog=fil.filter(d=>d.status==='andamento'||d.status==='revisao').length;
   document.getElementById('lista-kpis').innerHTML=[['Total',tot,'kv-neu'],['Entregues',ok,'kv-ok'],['Em andamento',prog,'kv-warn'],['Atrasados',late,'kv-late'],['Taxa',tot?Math.round(ok/tot*100)+'%':'—','kv-blue']].map(([l,v,c])=>`<div class="kpi"><div class="kpi-label">${l}</div><div class="kpi-value ${c}">${v}</div></div>`).join('');
   const tbody=document.getElementById('lista-body');tbody.innerHTML='';document.getElementById('lista-empty').style.display=fil.length?'none':'block';
-  fil.forEach(d=>{const sc=SC[d.status],dv=desvio(d);const pr=d.prior==='urgente'?`<span class="prior-urgente">Urgente</span>`:d.prior==='alta'?`<span class="prior-alta">Alta</span>`:'';const tr=document.createElement('tr');tr.title='Clique para editar';tr.onclick=()=>abrirEdicao(d.id);tr.innerHTML=`<td><span class="func-pill ${FP[d.func]||''}">${d.func}</span></td><td title="${d.resp}">${d.resp}</td><td title="${d.ativ}" style="font-weight:600">${d.ativ}</td><td style="font-size:12px;color:var(--text2)">${d.camp||'—'}</td><td style="font-size:12px;font-weight:500">${fmt(d.prazo)}</td><td style="font-size:12px;font-weight:500;color:${d.entrega?'var(--ok)':'var(--text3)'}">${d.entrega?fmt(d.entrega):'—'}</td><td><span class="dev-badge ${dv.cls}">${dv.txt}</span></td><td><span class="badge ${sc.cls}"><i class="ti ${sc.icon}" style="font-size:11px"></i> ${sc.label}</span></td><td>${pr}</td><td style="text-align:center"><i class="ti ti-pencil" style="font-size:14px;color:var(--blue)"></i></td>`;tbody.appendChild(tr);});
+  fil.forEach(d=>{const sc=SC[d.status],dv=desvio(d);const pr=d.prior==='urgente'?`<span class="prior-urgente">Urgente</span>`:d.prior==='alta'?`<span class="prior-alta">Alta</span>`:'';const tr=document.createElement('tr');tr.title='Clique para editar';tr.onclick=()=>abrirEdicao(d.id);tr.innerHTML=`<td><span class="func-pill ${FP[d.func]||''}">${d.func}</span></td><td title="${d.resp}">${d.resp}</td><td title="${d.ativ}" style="font-weight:600">${d.ativ}</td><td style="font-size:12px;color:var(--text2)">${d.camp||'—'}</td><td style="font-size:12px;font-weight:500">${fmt(d.prazo)}</td><td style="font-size:12px;font-weight:500;color:${d.entrega?'var(--ok)':'var(--text3)'}">${d.entrega?fmt(d.entrega):'—'}</td><td><span class="dev-badge ${dv.cls}">${dv.txt}</span></td><td><span class="badge ${sc.cls}"><i class="ti ${sc.icon}" style="font-size:11px"></i> ${sc.label}</span></td><td>${pr}</td><td style="text-align:center"><i class="ti ti-pencil" style="font-size:14px;color:var(--blue)"></i></td>`;
+    tbody.appendChild(tr);});
 }
 function renderKanban(){
   const fil=dadosFiltrados();
@@ -633,9 +634,8 @@ function selecionarStatus(s){statusSelecionado=s;document.querySelectorAll('.sta
 function switchModalTab(tab,el){document.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.modal-tab-content').forEach(t=>t.classList.remove('active'));if(el)el.classList.add('active');else document.querySelector(`.modal-tab[onclick*="${tab}"]`)?.classList.add('active');document.getElementById('mtab-'+tab)?.classList.add('active');}
 function salvarEdicao(){
   if(!editandoId)return;const idx=dados.findIndex(d=>d.id==editandoId);if(idx===-1)return;const old=dados[idx];
-  // Read status from the visually active button (more reliable than global var)
-  const activeBtnStatus=document.querySelector('.status-btn[class*="active-"]')?.dataset?.status||statusSelecionado||old.status;
-  const atualizado={...old,ativ:document.getElementById('e-ativ').value.trim(),func:document.getElementById('e-func').value,resp:document.getElementById('e-resp').value.trim(),camp:document.getElementById('e-camp').value.trim(),prazo:document.getElementById('e-prazo').value,entrega:document.getElementById('e-entrega').value,prior:document.getElementById('e-prior').value,vinculo:document.getElementById('e-vinculo').value,link:document.getElementById('e-link').value.trim(),obs:document.getElementById('e-obs').value.trim(),status:activeBtnStatus};
+  const stAtivo=document.querySelector('.status-btn[class*="active-"]')?.dataset?.status||statusSelecionado||old.status;
+  const atualizado={...old,ativ:document.getElementById('e-ativ').value.trim(),func:document.getElementById('e-func').value,resp:document.getElementById('e-resp').value.trim(),camp:document.getElementById('e-camp').value.trim(),prazo:document.getElementById('e-prazo').value,entrega:document.getElementById('e-entrega').value,prior:document.getElementById('e-prior').value,vinculo:document.getElementById('e-vinculo').value,link:document.getElementById('e-link').value.trim(),obs:document.getElementById('e-obs').value.trim(),status:stAtivo};
   if(old.status!==atualizado.status)adicionarHistorico(editandoId,`Status: ${SC[old.status].label} → ${SC[atualizado.status].label}`);
   if(old.resp!==atualizado.resp)adicionarHistorico(editandoId,`Responsável: ${old.resp} → ${atualizado.resp}`);
   dados[idx]=atualizado;saveLocal();populateFilterSelects();syncGS({...atualizado,action:'update'});renderAtivo();fecharModalEdicao();
@@ -671,6 +671,16 @@ function fecharModalSheets(){document.getElementById('modal-sheets').classList.r
 function salvarGS(){const url=document.getElementById('gs-url').value.trim();gsUrl=url;localStorage.setItem('mkt_gs_url',url);atualizarBadgeGS();fecharModalSheets();if(gsUrl)carregarDoSheets();}
 function desconectarGS(){gsUrl='';localStorage.removeItem('mkt_gs_url');atualizarBadgeGS();fecharModalSheets();}
 function atualizarBadgeGS(){const btn=document.getElementById('gs-btn'),lbl=document.getElementById('gs-label');if(gsUrl){btn.classList.add('connected');lbl.textContent='Sheets conectado';}else{btn.classList.remove('connected');lbl.textContent='Conectar Sheets';}}
+function parseDate(v){
+  if(!v)return'';
+  const s=String(v).trim();
+  if(!s||s==='0'||s==='Invalid Date')return'';
+  if(s.length>=10&&s[4]==='-')return s.substring(0,10);
+  const d=new Date(s);
+  if(isNaN(d))return'';
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+dd;
+}
 async function carregarDoSheets(){
   if(!gsUrl)return;
   try{
@@ -679,18 +689,18 @@ async function carregarDoSheets(){
     const json=await resp.json();
     if(Array.isArray(json)&&json.length>0){
       dados=json.map(d=>({
-        id:Number(d.id||d.ID||d.Id)||0,
-        func:d.func||d['Função']||d.Funcao||'',
-        resp:d.resp||d['Responsável']||d.Responsavel||'',
-        vinculo:d.vinculo||d['Vínculo']||d.Vinculo||'fixo',
-        ativ:d.ativ||d.Atividade||d['Atividade']||'',
-        camp:d.camp||d.Campanha||d['Campanha']||'',
-        prazo:(d.prazo||d.Prazo||'')?String(d.prazo||d.Prazo||'').substring(0,10):'',
-        entrega:(d.entrega||d['Entrega Real']||d.EntregaReal||d.conclusao||'')?String(d.entrega||d['Entrega Real']||d.EntregaReal||d.conclusao||'').substring(0,10):'',
-        status:(d.status||d.Status||'pendente').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace('andamento','andamento').replace('revisao','revisao').replace('atrasado','atrasado').replace('entregue','entregue').replace('pendente','pendente'),
-        prior:(d.prior||d.Prioridade||'normal').toLowerCase(),
-        link:d.link||d.Link||'',
-        obs:d.obs||d['Observações']||d.Observacoes||''
+        id:Number(d.ID||d.id||0),
+        func:String(d['Função']||d.func||''),
+        resp:String(d['Responsável']||d.resp||''),
+        vinculo:String(d['Vínculo']||d.vinculo||'fixo'),
+        ativ:String(d.Atividade||d.ativ||''),
+        camp:String(d.Campanha||d.camp||''),
+        prazo:parseDate(d.Prazo||d.prazo),
+        entrega:parseDate(d['Entrega Real']||d.entrega),
+        status:String(d.Status||d.status||'pendente').toLowerCase().trim(),
+        prior:String(d.Prioridade||d.prior||'normal').toLowerCase().trim(),
+        link:String(d.Link||d.link||''),
+        obs:String(d['Observações']||d.obs||'')
       }));
       nextId=dados.reduce((m,d)=>Math.max(m,Number(d.id)||0),0)+1;
       saveLocal();populateFilterSelects();
@@ -701,37 +711,24 @@ async function carregarDoSheets(){
 async function syncGS(item){
   if(!gsUrl)return;
   const lbl=document.getElementById('gs-label');
-  const btn=document.getElementById('gs-btn');
+  const mapped={
+    ID:item.id,'Função':item.func,'Responsável':item.resp,'Vínculo':item.vinculo,
+    Atividade:item.ativ,Campanha:item.camp,Prazo:item.prazo,'Entrega Real':item.entrega,
+    Status:item.status,Prioridade:item.prior,Link:item.link,'Observações':item.obs,
+    action:item.action
+  };
   try{
     if(lbl)lbl.textContent='⟳ Salvando...';
-    // Monta objeto com nomes de campo da planilha
-    const mapped={
-      ID:item.id, id:item.id,
-      'Função':item.func, func:item.func,
-      'Responsável':item.resp, resp:item.resp,
-      'Vínculo':item.vinculo, vinculo:item.vinculo,
-      Atividade:item.ativ, ativ:item.ativ,
-      Campanha:item.camp, camp:item.camp,
-      Prazo:item.prazo, prazo:item.prazo,
-      'Entrega Real':item.entrega, entrega:item.entrega,
-      Status:item.status, status:item.status,
-      Prioridade:item.prior, prior:item.prior,
-      Link:item.link, link:item.link,
-      'Observações':item.obs, obs:item.obs,
-      action:item.action
-    };
     const payload=encodeURIComponent(JSON.stringify(mapped));
-    // Tenta com CORS completo primeiro (funciona quando Apps Script está configurado)
     const resp=await fetch(gsUrl+'?data='+payload,{cache:'no-store'});
-    const txt=await resp.text();
-    if(lbl){lbl.textContent='✓ Salvo!';btn.classList.add('connected');}
+    await resp.text();
+    if(lbl)lbl.textContent='✓ Salvo!';
     setTimeout(()=>{if(lbl)lbl.textContent='Sheets conectado';},1500);
     setTimeout(()=>carregarDoSheets(),2000);
   }catch(e){
-    // fallback no-cors (quando GitHub Pages envia requisição cross-origin)
     try{
-      const payload=encodeURIComponent(JSON.stringify(item));
-      await fetch(gsUrl+'?data='+payload,{mode:'no-cors',cache:'no-store'});
+      const payload=encodeURIComponent(JSON.stringify(mapped));
+      await fetch(gsUrl+'?data='+payload,{mode:'no-cors'});
       if(lbl)lbl.textContent='Sheets conectado';
       setTimeout(()=>carregarDoSheets(),3000);
     }catch(e2){console.warn('Sync falhou:',e2);}
@@ -739,22 +736,16 @@ async function syncGS(item){
 }
 async function deletarGS(id){
   if(!gsUrl)return;
-  try{
-    const payload=encodeURIComponent(JSON.stringify({action:'delete',id}));
-    await fetch(gsUrl+'?data='+payload,{cache:'no-store'});
-  }catch(e){
-    try{
-      const payload=encodeURIComponent(JSON.stringify({action:'delete',id}));
-      await fetch(gsUrl+'?data='+payload,{mode:'no-cors',cache:'no-store'});
-    }catch(e2){console.warn('Del falhou:',e2);}
-  }
+  const payload=encodeURIComponent(JSON.stringify({action:'delete',id}));
+  try{await fetch(gsUrl+'?data='+payload,{cache:'no-store'});}
+  catch(e){try{await fetch(gsUrl+'?data='+payload,{mode:'no-cors'});}catch(e2){}}
 }
 document.getElementById('modal-edicao').addEventListener('click',function(e){if(e.target===this)fecharModalEdicao();});
 document.getElementById('modal-sheets').addEventListener('click',function(e){if(e.target===this)fecharModalSheets();});
 document.getElementById('e-novo-comentario').addEventListener('keydown',function(e){if(e.key==='Enter')adicionarComentario();});
 document.getElementById('e-nova-tarefa').addEventListener('keydown',function(e){if(e.key==='Enter')adicionarTarefa();});
 document.getElementById('e-link').addEventListener('input',function(){const a=document.getElementById('e-link-open');if(this.value){a.href=this.value;a.style.display='block';}else{a.style.display='none';}});
-gsUrl='https://script.google.com/macros/s/AKfycbxUcdF3U9vAk2VH4x0F-Q-JwJsbybn_Iv_bdibf9P84kGQyRtPGm6SKTc7m8JjHgOgS/exec';
+gsUrl='https://script.google.com/macros/s/AKfycby9vj4XisaauaAx0tgnzhz-MOn74PFNgRPSEhpHZdFDD6ldIivH1iM_OJW7oOF3-r44/exec';
 localStorage.setItem('mkt_gs_url',gsUrl);
 atualizarBadgeGS();populateFilterSelects();atualizarPeriodoLabel();carregarDoSheets();
 setInterval(()=>carregarDoSheets(),60000);
