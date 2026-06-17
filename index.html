@@ -133,6 +133,12 @@ tbody tr:last-child{border-bottom:none}
 tbody tr:hover{background:var(--blue-light)}
 tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .empty{text-align:center;padding:3rem;color:var(--text3);font-size:13px}
+.cal-fbtn{font-size:10px;font-weight:600;padding:3px 8px;border-radius:999px;border:1px solid var(--border2);background:var(--white);cursor:pointer;color:var(--text2);display:inline-flex;align-items:center;gap:4px;transition:all .15s}
+.cal-fbtn.active{background:var(--blue-light);color:var(--blue);border-color:var(--blue)}
+.cal-fbtn:hover{background:var(--blue-light);color:var(--blue)}
+.cal-day-tooltip{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:var(--text);color:var(--white);font-size:10px;padding:4px 8px;border-radius:var(--r-xs);white-space:nowrap;z-index:99;pointer-events:none;display:none;min-width:120px;line-height:1.5}
+.cal-day-wrap{position:relative}
+.cal-day-wrap:hover .cal-day-tooltip{display:block}
 .kanban-board{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:start;overflow-x:auto;padding-bottom:1rem}
 .kanban-col{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);min-height:200px}
 .kanban-col-header{padding:.85rem 1rem;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);background:var(--surface2);border-radius:var(--r) var(--r) 0 0}
@@ -244,7 +250,13 @@ tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;
 .modal-foot{display:flex;gap:8px;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)}
 .rel-section{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.25rem;margin-bottom:12px;box-shadow:var(--shadow-sm)}
 .rel-section h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-@media(max-width:900px){.kanban-board{grid-template-columns:repeat(3,minmax(200px,1fr))}}
+@media(max-width:900px){.cal-fbtn{font-size:10px;font-weight:600;padding:3px 8px;border-radius:999px;border:1px solid var(--border2);background:var(--white);cursor:pointer;color:var(--text2);display:inline-flex;align-items:center;gap:4px;transition:all .15s}
+.cal-fbtn.active{background:var(--blue-light);color:var(--blue);border-color:var(--blue)}
+.cal-fbtn:hover{background:var(--blue-light);color:var(--blue)}
+.cal-day-tooltip{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:var(--text);color:var(--white);font-size:10px;padding:4px 8px;border-radius:var(--r-xs);white-space:nowrap;z-index:99;pointer-events:none;display:none;min-width:120px;line-height:1.5}
+.cal-day-wrap{position:relative}
+.cal-day-wrap:hover .cal-day-tooltip{display:block}
+.kanban-board{grid-template-columns:repeat(3,minmax(200px,1fr))}}
 @media(max-width:640px){.form-grid{grid-template-columns:1fr}.fg.full{grid-column:1}.kpi-grid{grid-template-columns:repeat(2,1fr)}}
 @media print{.nav,.header,.filter-bar,.btn,.toolbar{display:none!important}.page{display:block!important;padding:.5rem}body{background:#fff}}
 </style>
@@ -318,23 +330,44 @@ tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;
 <div class="page active" id="page-dashboard">
   <div class="kpi-grid" id="dash-kpis"></div>
   <div id="dash-alertas"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1.25rem">
+    <div class="section-card">
+      <h3><i class="ti ti-chart-pie"></i> Status dos entregáveis</h3>
+      <div style="display:flex;align-items:center;gap:20px">
+        <canvas id="chart-pizza" width="140" height="140" style="flex-shrink:0"></canvas>
+        <div id="chart-pizza-legend" style="display:flex;flex-direction:column;gap:7px;flex:1"></div>
+      </div>
+    </div>
+    <div class="section-card">
+      <h3><i class="ti ti-chart-bar"></i> Entregas por função</h3>
+      <div id="chart-barras" style="display:flex;align-items:flex-end;justify-content:space-around;height:110px;gap:6px;padding-top:4px"></div>
+    </div>
+  </div>
   <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-bottom:1.25rem">
     <div style="display:flex;flex-direction:column;gap:14px">
       <div class="section-card"><h3><i class="ti ti-speakerphone"></i> Campanhas</h3><div id="dash-campanhas"></div></div>
-      <div class="section-card"><h3><i class="ti ti-trending-up"></i> Entregas por semana</h3><div class="trend-chart" id="dash-trend"></div></div>
+      <div class="section-card"><h3><i class="ti ti-trending-up"></i> Entregas por mês</h3><div style="display:flex;gap:12px;font-size:11px;color:var(--text3);margin-bottom:6px"><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:2px;background:var(--blue);display:inline-block"></span>Entregues</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:2px;border-top:2px dashed var(--ok);display:inline-block"></span>Meta</span></div><div id="chart-linha" style="width:100%;height:120px"></div></div>
     </div>
     <div class="section-card"><h3><i class="ti ti-users"></i> Equipe</h3><div id="dash-equipe"></div></div>
   </div>
   <div class="section-card" style="margin-bottom:1rem">
-    <h3><i class="ti ti-calendar"></i> Prazos do mês</h3>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <h3 style="margin-bottom:0"><i class="ti ti-calendar"></i> Prazos do mês</h3>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button onclick="navCalMes(-1)" style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border2);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:12px"><i class="ti ti-chevron-left"></i></button>
+        <span id="cal-mes-label" style="font-size:12px;font-weight:600;color:var(--text);min-width:100px;text-align:center"></span>
+        <button onclick="navCalMes(1)" style="width:24px;height:24px;border-radius:6px;border:1px solid var(--border2);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:12px"><i class="ti ti-chevron-right"></i></button>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap" id="cal-filters">
+        <button class="cal-fbtn active" data-s="all" onclick="toggleCalFilter('all',this)">Todos</button>
+        <button class="cal-fbtn active" data-s="entregue" onclick="toggleCalFilter('entregue',this)"><span style="width:6px;height:6px;border-radius:50%;background:var(--ok);display:inline-block"></span> Entregue</button>
+        <button class="cal-fbtn active" data-s="andamento" onclick="toggleCalFilter('andamento',this)"><span style="width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block"></span> Andamento</button>
+        <button class="cal-fbtn active" data-s="pendente" onclick="toggleCalFilter('pendente',this)"><span style="width:6px;height:6px;border-radius:50%;background:var(--text3);display:inline-block"></span> Pendente</button>
+        <button class="cal-fbtn active" data-s="atrasado" onclick="toggleCalFilter('atrasado',this)"><span style="width:6px;height:6px;border-radius:50%;background:var(--danger);display:inline-block"></span> Atrasado</button>
+      </div>
+    </div>
     <div class="cal-header-row" id="cal-wdays"></div>
     <div class="cal-grid" id="dash-cal"></div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:4px">
-      <span style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px"><span class="cal-dot" style="background:var(--ok)"></span>Entregue</span>
-      <span style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px"><span class="cal-dot" style="background:var(--gold)"></span>Em andamento</span>
-      <span style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px"><span class="cal-dot" style="background:var(--danger)"></span>Atrasado</span>
-      <span style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px"><span class="cal-dot" style="background:var(--text3)"></span>Pendente</span>
-    </div>
   </div>
 </div>
 
@@ -498,6 +531,8 @@ let nextId=dados.reduce((m,d)=>Math.max(m,Number(d.id)||0),0)+1;
 let gsUrl=localStorage.getItem('mkt_gs_url')||'';
 let editandoId=null,statusSelecionado='pendente';
 let filtro={periodo:'tudo',offset:0,campanha:'',equipe:'',funcao:''};
+let calNavOffset=0;
+let calActiveFilters=new Set(['entregue','andamento','pendente','atrasado','revisao']);
 function saveLocal(){localStorage.setItem('mkt_v2',JSON.stringify(dados));localStorage.setItem('mkt_comentarios',JSON.stringify(comentarios));localStorage.setItem('mkt_checklists',JSON.stringify(checklists));localStorage.setItem('mkt_historico',JSON.stringify(historico));}
 function fmt(d){if(!d)return'—';const[y,m,di]=d.split('-');return`${di}/${m}`;}
 function initials(n){return(n||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();}
@@ -568,9 +603,7 @@ function renderDashboard(){
   document.getElementById('dash-alertas').innerHTML=alertas.length?`<div class="alert-box"><h3><i class="ti ti-alert-triangle"></i> Atenção imediata — ${alertas.length} ite${alertas.length>1?'ns':'m'}</h3>${alertas.map(d=>`<div class="alert-item" onclick="abrirEdicao(${d.id})"><span class="func-pill ${FP[d.func]||''}">${d.func}</span><span style="flex:1;font-weight:600">${d.ativ}</span><span style="font-size:12px;color:var(--text2)">${d.resp}</span><span class="alert-days">${desvio(d).txt}</span></div>`).join('')}</div>`:`<div style="background:var(--ok-bg);border:1.5px solid var(--ok-border);border-radius:var(--r);padding:.75rem 1.1rem;margin-bottom:1.25rem;font-size:13px;color:var(--ok);font-weight:600;display:flex;align-items:center;gap:8px"><i class="ti ti-circle-check"></i> Nenhum item crítico nos próximos 3 dias.</div>`;
   const camps=[...new Set(fil.map(d=>d.camp).filter(Boolean))];
   document.getElementById('dash-campanhas').innerHTML=camps.length?camps.map(c=>{const itens=fil.filter(d=>d.camp===c);const ent=itens.filter(d=>d.status==='entregue').length;const pct=Math.round(ent/itens.length*100);const cor=pct>=80?'var(--ok)':pct>=50?'var(--gold)':'var(--danger)';return`<div class="camp-item"><div class="camp-header"><span class="camp-name">${c}</span><span class="camp-stats">${ent}/${itens.length} · ${pct}%</span></div><div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${cor}"></div></div></div>`;}).join(''):'<p style="font-size:13px;color:var(--text3)">Nenhuma campanha no período.</p>';
-  const semanas=[];for(let i=5;i>=0;i--){const ini=new Date(hoje);ini.setDate(hoje.getDate()-hoje.getDay()-i*7);const fim=new Date(ini);fim.setDate(ini.getDate()+6);const qtd=dados.filter(d=>d.status==='entregue'&&d.entrega&&(()=>{const e=new Date(d.entrega+'T00:00:00');return e>=ini&&e<=fim;})()).length;semanas.push({label:`S${6-i}`,qtd});}
-  const maxQ=Math.max(...semanas.map(s=>s.qtd),1);
-  document.getElementById('dash-trend').innerHTML=semanas.map(s=>`<div class="trend-bar-wrap"><div class="trend-val">${s.qtd||''}</div><div class="trend-bar" style="height:${Math.max(s.qtd/maxQ*60,s.qtd>0?4:2)}px;background:${s.qtd>0?'var(--blue)':'var(--border2)'}"></div><div class="trend-label">${s.label}</div></div>`).join('');
+
   const profs=[...new Set(fil.map(d=>d.resp))];
   document.getElementById('dash-equipe').innerHTML=profs.map((p,i)=>{
     const itens=fil.filter(d=>d.resp===p);
@@ -611,15 +644,176 @@ function renderDashboard(){
     </div>`;
   }).join('')||'<p style="font-size:13px;color:var(--text3)">Nenhum membro no período.</p>';
   renderCalendario(fil);
+  setTimeout(()=>renderGraficos(fil),50);
   const nb=document.getElementById('badge-atrasados');const totalLate=dados.filter(d=>d.status==='atrasado').length;if(totalLate>0){nb.textContent=totalLate;nb.style.display='';}else{nb.style.display='none';}
   document.getElementById('hd-meta').textContent=`Gestão de Marketing · ${new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`;
 }
+function renderGraficos(fil){
+  // PIZZA - status
+  const statusCores={entregue:'#16a34a',andamento:'#b45309',revisao:'#2B3FD4',atrasado:'#dc2626',pendente:'#9090b0'};
+  const statusLabels={entregue:'Entregue',andamento:'Em andamento',revisao:'Em revisão',atrasado:'Atrasado',pendente:'Pendente'};
+  const counts={entregue:0,andamento:0,revisao:0,atrasado:0,pendente:0};
+  fil.forEach(d=>{if(counts[d.status]!==undefined)counts[d.status]++;});
+  const total=fil.length||1;
+  const canvas=document.getElementById('chart-pizza');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,140,140);
+  const cx=70,cy=70,r=60,ri=36;
+  let angle=-Math.PI/2;
+  const order=['entregue','andamento','revisao','atrasado','pendente'];
+  order.forEach(s=>{
+    const v=counts[s];if(!v)return;
+    const slice=(v/total)*Math.PI*2;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,angle,angle+slice);
+    ctx.closePath();ctx.fillStyle=statusCores[s];ctx.fill();
+    angle+=slice;
+  });
+  // donut hole
+  ctx.beginPath();ctx.arc(cx,cy,ri,0,Math.PI*2);
+  ctx.fillStyle='#ffffff';ctx.fill();
+  // center text
+  ctx.fillStyle='#12132a';ctx.font='bold 18px Inter,sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(fil.length,cx,cy-8);
+  ctx.font='10px Inter,sans-serif';ctx.fillStyle='#9090b0';
+  ctx.fillText('itens',cx,cy+10);
+  // legend
+  const leg=document.getElementById('chart-pizza-legend');
+  if(leg)leg.innerHTML=order.filter(s=>counts[s]>0).map(s=>`
+    <div style="display:flex;align-items:center;gap:7px">
+      <span style="width:10px;height:10px;border-radius:50%;background:${statusCores[s]};flex-shrink:0"></span>
+      <span style="font-size:12px;color:var(--text2);flex:1">${statusLabels[s]}</span>
+      <span style="font-size:12px;font-weight:700;color:${statusCores[s]}">${counts[s]}</span>
+      <span style="font-size:11px;color:var(--text3)">${Math.round(counts[s]/total*100)}%</span>
+    </div>`).join('');
+
+  // BARRAS VERTICAIS - por função
+  const barDiv=document.getElementById('chart-barras');
+  if(barDiv){
+    const FUNCS=['Fotógrafo','Design','Social Media','Videomaker','Tráfego Pago','Copywriter'];
+    const ABREV=['Fotógrafo','Design','Social','Video','Tráfego','Copy'];
+    const maxF=Math.max(...FUNCS.map(f=>fil.filter(d=>d.func===f).length),1);
+    barDiv.innerHTML=FUNCS.map((f,i)=>{
+      const itens=fil.filter(d=>d.func===f);
+      const ent=itens.filter(d=>d.status==='entregue').length;
+      const pct=itens.length?Math.round(ent/itens.length*100):0;
+      const cor=pct>=80?'#16a34a':pct>=50?'#b45309':'#dc2626';
+      const pctColor=itens.length===0?'#9090b0':cor;
+      // altura proporcional ao % de entrega, não à quantidade
+      const h=Math.max(Math.round(pct/100*84),itens.length>0?4:0);
+      return`<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
+        <span style="font-size:10px;font-weight:600;color:${pctColor}">${itens.length?pct+'%':'-'}</span>
+        <div style="width:100%;background:#f2f3f8;border-radius:4px 4px 0 0;height:88px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden">
+          ${h>0?`<div style="width:100%;height:${h}px;background:${cor}"></div>`:''}
+        </div>
+        <span style="font-size:9px;color:#9090b0;text-align:center;line-height:1.3">${ABREV[i]}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // LINHA MENSAL - SVG puro
+  const lw=document.getElementById('chart-linha');
+  if(lw){
+    const MN=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    const labels=[],vals=[];
+    // Descobre o mês mais recente com prazo entre todos os dados
+    const hoje=new Date();
+    const datasRef=fil.filter(x=>x.prazo).map(x=>new Date(x.prazo+'T00:00:00'));
+    const maxData=datasRef.length?new Date(Math.max(...datasRef)):hoje;
+    const refAno=maxData.getFullYear(),refMes=maxData.getMonth();
+    for(let i=5;i>=0;i--){
+      let m=refMes-i,a=refAno+Math.floor((refMes-i)/12);
+      m=((m%12)+12)%12;
+      if(refMes-i<0)a=refAno-1;
+      const d=new Date(a,m,1);
+      labels.push(MN[d.getMonth()]);
+      const qtd=fil.filter(x=>{
+        if(x.status!=='entregue'||!x.entrega)return false;
+        const e=new Date(x.entrega+'T00:00:00');
+        return e.getFullYear()===d.getFullYear()&&e.getMonth()===d.getMonth();
+      }).length;
+      vals.push(qtd);
+    }
+    // Meta por mês = itens com prazo naquele mês
+    const metas=labels.map((_,i)=>{
+      let m=refMes-5+i,a=refAno+Math.floor((refMes-5+i)/12);
+      m=((m%12)+12)%12;
+      const d=new Date(a,m,1);
+      return fil.filter(x=>{
+        if(!x.prazo)return false;
+        const p=new Date(x.prazo+'T00:00:00');
+        return p.getFullYear()===d.getFullYear()&&p.getMonth()===d.getMonth();
+      }).length;
+    });
+    const VW=400,VH=120,PL=24,PR=8,PT=10,PB=22;
+    const cW=VW-PL-PR,cH=VH-PT-PB;
+    const maxV=Math.max(...vals,...metas,1);
+    const xp=i=>Math.round(PL+i*(cW/5));
+    const yp=v=>Math.round(PT+cH-v/maxV*cH);
+    const area='M'+xp(0)+','+yp(vals[0])+' '+vals.slice(1).map((_,i)=>'L'+xp(i+1)+','+yp(vals[i+1])).join(' ')+' L'+xp(5)+','+(PT+cH)+' L'+xp(0)+','+(PT+cH)+' Z';
+    const line='M'+vals.map((v,i)=>xp(i)+','+yp(v)).join(' L');
+    const gridV=[0,Math.ceil(maxV/2),maxV];
+    const grid=gridV.map(v=>'<line x1="'+PL+'" y1="'+yp(v)+'" x2="'+(VW-PR)+'" y2="'+yp(v)+'" stroke="#e5e7eb" stroke-width="1"/><text x="'+(PL-3)+'" y="'+(yp(v)+4)+'" text-anchor="end" font-size="9" fill="#9090b0">'+v+'</text>').join('');
+    const dots=vals.map((v,i)=>'<circle cx="'+xp(i)+'" cy="'+yp(v)+'" r="4" fill="#2B3FD4" stroke="#fff" stroke-width="2"/>').join('');
+    const xlbls=labels.map((l,i)=>'<text x="'+xp(i)+'" y="'+(VH-4)+'" text-anchor="middle" font-size="10" fill="#9090b0">'+l+'</text>').join('');
+    lw.innerHTML='<svg viewBox="0 0 '+VW+' '+VH+'" width="100%" height="120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">'+
+      grid+
+      '<path d="'+area+'" fill="rgba(43,63,212,0.07)"/>'+
+      '<polyline points="'+metas.map((m,i)=>xp(i)+','+yp(m)).join(' ')+'" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="5,3"/>'+
+      metas.map((m,i)=>'<circle cx="'+xp(i)+'" cy="'+yp(m)+'" r="3" fill="#16a34a"/>').join('')+
+      '<path d="'+line+'" fill="none" stroke="#2B3FD4" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'+
+      dots+xlbls+'</svg>';
+  }
+}
+function navCalMes(dir){calNavOffset+=dir;renderCalendario(dadosFiltrados());}
+function toggleCalFilter(s,btn){
+  if(s==='all'){
+    const allOn=calActiveFilters.size===5;
+    if(allOn){calActiveFilters.clear();document.querySelectorAll('.cal-fbtn:not([data-s="all"])').forEach(b=>b.classList.remove('active'));}
+    else{calActiveFilters=new Set(['entregue','andamento','pendente','atrasado','revisao']);document.querySelectorAll('.cal-fbtn:not([data-s="all"])').forEach(b=>b.classList.add('active'));}
+  }else{
+    if(calActiveFilters.has(s)){calActiveFilters.delete(s);btn.classList.remove('active');}
+    else{calActiveFilters.add(s);btn.classList.add('active');}
+  }
+  renderCalendario(dadosFiltrados());
+}
 function renderCalendario(fil){
-  const hoje=new Date();hoje.setHours(0,0,0,0);const ano=hoje.getFullYear(),mes=hoje.getMonth();
-  const primeiroDia=new Date(ano,mes,1).getDay();const diasNoMes=new Date(ano,mes+1,0).getDate();
+  const hoje=new Date();hoje.setHours(0,0,0,0);
+  const baseAno=hoje.getFullYear(),baseMes=hoje.getMonth();
+  let mes=baseMes+calNavOffset;
+  let ano=baseAno+Math.floor(mes/12);
+  mes=((mes%12)+12)%12;
+  const primeiroDia=new Date(ano,mes,1).getDay();
+  const diasNoMes=new Date(ano,mes+1,0).getDate();
+  const mesesNome=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const lbl=document.getElementById('cal-mes-label');
+  if(lbl)lbl.textContent=`${mesesNome[mes]} ${ano}`;
   document.getElementById('cal-wdays').innerHTML=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(w=>`<div class="cal-wday">${w}</div>`).join('');
-  let html='';for(let i=0;i<primeiroDia;i++)html+=`<div class="cal-day"></div>`;
-  for(let d=1;d<=diasNoMes;d++){const isHoje=d===hoje.getDate();const dateStr=`${ano}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const itensHoje=(fil||dados).filter(item=>item.prazo===dateStr);const dots=itensHoje.map(item=>{const cor=item.status==='entregue'?'var(--ok)':item.status==='atrasado'?'var(--danger)':item.status==='andamento'||item.status==='revisao'?'var(--gold)':'var(--text3)';return`<span class="cal-dot" style="background:${cor}" title="${item.ativ}" onclick="abrirEdicao(${item.id})"></span>`;}).join('');html+=`<div class="cal-day${isHoje?' today':''}"><div class="cal-day-label" style="${isHoje?'color:var(--blue);font-weight:800':''}">${d}</div>${dots}</div>`;}
+  const CORES={entregue:'var(--ok)',andamento:'var(--gold)',revisao:'var(--blue)',atrasado:'var(--danger)',pendente:'var(--text3)'};
+  let html='';
+  for(let i=0;i<primeiroDia;i++)html+=`<div class="cal-day"></div>`;
+  for(let d=1;d<=diasNoMes;d++){
+    const dt=new Date(ano,mes,d);
+    const isPast=dt<hoje;
+    const isHoje=dt.toDateString()===hoje.toDateString();
+    const isWknd=dt.getDay()===0||dt.getDay()===6;
+    const dateStr=`${ano}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const itensHoje=(fil||dados).filter(item=>item.prazo===dateStr&&calActiveFilters.has(item.status));
+    let dots='';
+    if(itensHoje.length===1){
+      const it=itensHoje[0];
+      dots=`<div class="cal-day-wrap"><span class="cal-dot" style="background:${CORES[it.status]};cursor:pointer" onclick="abrirEdicao(${it.id})"></span><div class="cal-day-tooltip"><strong>${it.ativ}</strong><br>${it.resp} · ${it.status}</div></div>`;
+    }else if(itensHoje.length>1){
+      const cor=CORES[itensHoje[0].status];
+      const nomes=itensHoje.map(i=>i.ativ).join(', ');
+      dots=`<div class="cal-day-wrap"><span style="width:14px;height:14px;border-radius:999px;background:${cor};display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;cursor:pointer">${itensHoje.length}</span><div class="cal-day-tooltip">${itensHoje.length} itens<br>${nomes}</div></div>`;
+    }
+    const wkndStyle=isWknd&&!isHoje?'background:var(--surface2)':'';
+    const pastStyle=isPast&&!isHoje?'opacity:.45':'';
+    html+=`<div class="cal-day${isHoje?' today':''}" style="${wkndStyle};${pastStyle}"><div class="cal-day-label" style="${isHoje?'color:var(--blue);font-weight:800':''}">${d}</div>${dots}</div>`;
+  }
   document.getElementById('dash-cal').innerHTML=html;
 }
 function renderLista(){
