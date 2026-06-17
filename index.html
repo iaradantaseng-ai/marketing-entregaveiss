@@ -656,30 +656,42 @@ function limparFiltros(){
 function populateFilterSelects(){const camps=[...new Set(dados.map(d=>d.camp).filter(Boolean))].sort();const profs=[...new Set(dados.map(d=>d.resp).filter(Boolean))].sort();const fc=document.getElementById('f-campanha');const fe=document.getElementById('f-equipe');const cv=fc.value,ev=fe.value;fc.innerHTML='<option value="">Todas as campanhas</option>'+camps.map(c=>`<option value="${c}">${c}</option>`).join('');fe.innerHTML='<option value="">Toda a equipe</option>'+profs.map(p=>`<option value="${p}">${p}</option>`).join('');fc.value=cv;fe.value=ev;}
 function goTab(id,el){document.querySelectorAll('.page,.page-full').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));const pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');if(el)el.classList.add('active');if(id==='dashboard')renderDashboard();else if(id==='lista')renderLista();else if(id==='kanban')renderKanban();else if(id==='equipe')renderEquipe();else if(id==='relatorio')gerarRelatorio();}
 function renderAtivo(){const aba=document.querySelector('.page.active,.page-full.active');if(!aba)return;const id=aba.id.replace('page-','');if(id==='dashboard')renderDashboard();else if(id==='lista')renderLista();else if(id==='kanban')renderKanban();else if(id==='relatorio')gerarRelatorio();else if(id==='equipe'){const perf=document.getElementById('equipe-perfil');if(perf.style.display!=='none'){const nm=perf.querySelector('.perfil-name')?.textContent;if(nm)abrirPerfil(nm);else renderEquipe();}else renderEquipe();}}
-function fotoEquipeUpload(input,nome){
-  const file=input.files[0];if(!file)return;
+function comprimirFoto(file,cb){
   const reader=new FileReader();
   reader.onload=function(e){
-    fotosEquipe[nome]=e.target.result;
-    saveFotos();
-    renderEquipe();
+    const img=new Image();
+    img.onload=function(){
+      const canvas=document.createElement('canvas');
+      const MAX=100;
+      let w=img.width,h=img.height;
+      if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}
+      else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
+      canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      cb(canvas.toDataURL('image/jpeg',0.8));
+    };
+    img.src=e.target.result;
   };
   reader.readAsDataURL(file);
 }
+function fotoEquipeUpload(input,nome){
+  const file=input.files[0];if(!file)return;
+  comprimirFoto(file,function(base64){
+    fotosEquipe[nome]=base64;
+    saveFotos();
+    renderEquipe();
+  });
+}
 function fotoUpload(input,hiddenId,previewId){
-  const file=input.files[0];
-  if(!file)return;
-  const reader=new FileReader();
-  reader.onload=function(e){
-    const base64=e.target.result;
+  const file=input.files[0];if(!file)return;
+  comprimirFoto(file,function(base64){
     document.getElementById(hiddenId).value=base64;
     const preview=document.getElementById(previewId);
     preview.innerHTML=`<img src="${base64}" style="width:100%;height:100%;object-fit:cover">`;
-    // Save immediately to fotosEquipe by resp name
     const respEl=document.getElementById(hiddenId==='f-foto'?'f-resp':'e-resp');
     if(respEl&&respEl.value.trim()){fotosEquipe[respEl.value.trim()]=base64;saveFotos();}
-  };
-  reader.readAsDataURL(file);
+  });
 }
 function avatarHtml(resp,foto,size,fontSize){
   const cor=avatarColor(resp);
@@ -1048,6 +1060,9 @@ async function carregarDoSheets(){
         foto:String(d.Foto||d.foto||'')
       }));
       nextId=dados.reduce((m,d)=>Math.max(m,Number(d.id)||0),0)+1;
+      // Atualiza fotosEquipe com fotos vindas do Sheets
+      dados.forEach(d=>{if(d.foto&&d.resp&&!fotosEquipe[d.resp]){fotosEquipe[d.resp]=d.foto;}});
+      saveFotos();
       saveLocal();populateFilterSelects();
     }
     renderAtivo();
@@ -1060,6 +1075,7 @@ async function syncGS(item){
     ID:item.id,'Função':item.func,'Responsável':item.resp,'Vínculo':item.vinculo,
     Atividade:item.ativ,Campanha:item.camp,Prazo:item.prazo,'Entrega Real':item.entrega,
     Status:item.status,Prioridade:item.prior,Link:item.link,'Observações':item.obs,
+    Foto:getFoto(item.resp)||'',
     action:item.action
   };
   try{
