@@ -308,12 +308,18 @@ tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;
     <button class="fp-btn" data-p="semana" onclick="setPeriodo('semana',this)">Semana</button>
     <button class="fp-btn" data-p="mes" onclick="setPeriodo('mes',this)">Mês</button>
     <button class="fp-btn" data-p="ano" onclick="setPeriodo('ano',this)">Ano</button>
+    <button class="fp-btn" data-p="intervalo" onclick="setPeriodo('intervalo',this)">Intervalo</button>
     <button class="fp-btn active" data-p="tudo" onclick="setPeriodo('tudo',this)">Tudo</button>
   </div>
   <div class="filter-nav" id="filter-nav" style="display:none">
     <button onclick="navPeriodo(-1)"><i class="ti ti-chevron-left" style="font-size:13px"></i></button>
     <span class="filter-period-label" id="filter-period-label">—</span>
     <button onclick="navPeriodo(1)"><i class="ti ti-chevron-right" style="font-size:13px"></i></button>
+  </div>
+  <div id="filter-intervalo" style="display:none;align-items:center;gap:6px">
+    <input type="date" id="filtro-de" onchange="aplicarFiltros()" style="font-size:12px;padding:5px 8px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--white);color:var(--text);font-family:'Inter',sans-serif">
+    <span style="font-size:12px;color:var(--text3)">até</span>
+    <input type="date" id="filtro-ate" onchange="aplicarFiltros()" style="font-size:12px;padding:5px 8px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--white);color:var(--text);font-family:'Inter',sans-serif">
   </div>
   <div class="filter-divider"></div>
   <select class="filter-select" id="f-campanha" onchange="aplicarFiltros()"><option value="">Todas as campanhas</option></select>
@@ -414,6 +420,16 @@ tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;
     <div class="form-grid">
       <div class="fg"><label>Função *</label><select id="f-func"><option value="">Selecione...</option><option>Fotógrafo</option><option>Design</option><option>Social Media</option><option>Videomaker</option><option>Tráfego Pago</option><option>Copywriter</option></select></div>
       <div class="fg"><label>Responsável *</label><input id="f-resp" type="text" placeholder="Nome"></div>
+      <div class="fg"><label>Foto do responsável</label>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div id="f-foto-preview" style="width:40px;height:40px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--blue);flex-shrink:0;overflow:hidden;border:2px solid var(--border2)"><i class="ti ti-user" style="font-size:16px"></i></div>
+          <label style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r-sm);border:1.5px solid var(--border2);font-size:12px;font-weight:600;color:var(--text2);background:var(--white);transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">
+            <i class="ti ti-upload" style="font-size:14px"></i> Escolher foto
+            <input type="file" accept="image/*" style="display:none" onchange="fotoUpload(this,'f-foto','f-foto-preview')">
+          </label>
+          <input type="hidden" id="f-foto">
+        </div>
+      </div>
       <div class="fg"><label>Vínculo</label><select id="f-vinculo"><option value="fixo">Fixo</option><option value="freelancer">Freelancer</option></select></div>
       <div class="fg"><label>Campanha</label><input id="f-camp" type="text" placeholder="Ex: Aurora"></div>
       <div class="fg full"><label>Atividade / Entregável *</label><input id="f-ativ" type="text" placeholder="Descreva o que deve ser entregue"></div>
@@ -450,6 +466,16 @@ tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div class="fg"><label>Função</label><select id="e-func"><option>Fotógrafo</option><option>Design</option><option>Social Media</option><option>Videomaker</option><option>Tráfego Pago</option><option>Copywriter</option></select></div>
           <div class="fg"><label>Responsável</label><input id="e-resp" type="text"></div>
+          <div class="fg"><label>Foto do responsável</label>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div id="e-foto-preview" style="width:40px;height:40px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--blue);flex-shrink:0;overflow:hidden;border:2px solid var(--border2)"><i class="ti ti-user" style="font-size:16px"></i></div>
+              <label style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r-sm);border:1.5px solid var(--border2);font-size:12px;font-weight:600;color:var(--text2);background:var(--white);transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">
+                <i class="ti ti-upload" style="font-size:14px"></i> Escolher foto
+                <input type="file" accept="image/*" style="display:none" onchange="fotoUpload(this,'e-foto','e-foto-preview')">
+              </label>
+              <input type="hidden" id="e-foto">
+            </div>
+          </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div class="fg"><label>Campanha</label><input id="e-camp" type="text"></div>
@@ -531,6 +557,9 @@ let nextId=dados.reduce((m,d)=>Math.max(m,Number(d.id)||0),0)+1;
 let gsUrl=localStorage.getItem('mkt_gs_url')||'';
 let editandoId=null,statusSelecionado='pendente';
 let filtro={periodo:'tudo',offset:0,campanha:'',equipe:'',funcao:''};
+let fotosEquipe=JSON.parse(localStorage.getItem('mkt_fotos')||'{}');
+function saveFotos(){localStorage.setItem('mkt_fotos',JSON.stringify(fotosEquipe));}
+function getFoto(resp){return fotosEquipe[resp]||dados.find(d=>d.resp===resp&&d.foto)?.foto||'';}
 let calNavOffset=0;
 let calActiveFilters=new Set(['entregue','andamento','pendente','atrasado','revisao']);
 function saveLocal(){localStorage.setItem('mkt_v2',JSON.stringify(dados));localStorage.setItem('mkt_comentarios',JSON.stringify(comentarios));localStorage.setItem('mkt_checklists',JSON.stringify(checklists));localStorage.setItem('mkt_historico',JSON.stringify(historico));}
@@ -555,6 +584,13 @@ function getPeriodoBounds(){
   if(filtro.periodo==='semana'){const dow=hoje.getDay();const ini=new Date(hoje);ini.setDate(hoje.getDate()-dow+off*7);const fim=new Date(ini);fim.setDate(ini.getDate()+6);return{ini,fim};}
   if(filtro.periodo==='mes'){const ini=new Date(hoje.getFullYear(),hoje.getMonth()+off,1);const fim=new Date(hoje.getFullYear(),hoje.getMonth()+off+1,0);return{ini,fim};}
   if(filtro.periodo==='ano'){const ini=new Date(hoje.getFullYear()+off,0,1);const fim=new Date(hoje.getFullYear()+off,11,31);return{ini,fim};}
+  if(filtro.periodo==='intervalo'){
+    const de=document.getElementById('filtro-de')?.value;
+    const ate=document.getElementById('filtro-ate')?.value;
+    if(de&&ate){const ini=new Date(de+'T00:00:00');const fim=new Date(ate+'T00:00:00');return{ini,fim};}
+    if(de){const ini=new Date(de+'T00:00:00');const fim=new Date(hoje);fim.setFullYear(fim.getFullYear()+1);return{ini,fim};}
+    if(ate){const ini=new Date(0);const fim=new Date(ate+'T00:00:00');return{ini,fim};}
+  }
   return null;
 }
 function getPeriodoLabel(){
@@ -562,6 +598,14 @@ function getPeriodoLabel(){
   if(filtro.periodo==='semana'){const b=getPeriodoBounds();return`${b.ini.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})} – ${b.fim.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})}`;}
   if(filtro.periodo==='mes'){const d=new Date(hoje.getFullYear(),hoje.getMonth()+off,1);return d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});}
   if(filtro.periodo==='ano')return String(hoje.getFullYear()+off);
+  if(filtro.periodo==='intervalo'){
+    const de=document.getElementById('filtro-de')?.value;
+    const ate=document.getElementById('filtro-ate')?.value;
+    if(de&&ate)return`${de.split('-').reverse().join('/')} – ${ate.split('-').reverse().join('/')}`;
+    if(de)return`A partir de ${de.split('-').reverse().join('/')}`;
+    if(ate)return`Até ${ate.split('-').reverse().join('/')}`;
+    return'Selecione o intervalo';
+  }
   return'Todos os períodos';
 }
 function dadosFiltrados(){
@@ -573,7 +617,16 @@ function dadosFiltrados(){
   if(filtro.funcao)d=d.filter(item=>item.func===filtro.funcao);
   return d;
 }
-function setPeriodo(p,el){filtro.periodo=p;filtro.offset=0;document.querySelectorAll('.fp-btn').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('filter-nav').style.display=p==='tudo'?'none':'flex';atualizarPeriodoLabel();aplicarFiltros();}
+function setPeriodo(p,el){
+  filtro.periodo=p;filtro.offset=0;
+  document.querySelectorAll('.fp-btn').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const isIntervalo=p==='intervalo';
+  const isNav=!['tudo','intervalo'].includes(p);
+  document.getElementById('filter-nav').style.display=isNav?'flex':'none';
+  document.getElementById('filter-intervalo').style.display=isIntervalo?'flex':'none';
+  atualizarPeriodoLabel();aplicarFiltros();
+}
 function navPeriodo(dir){filtro.offset+=dir;atualizarPeriodoLabel();aplicarFiltros();}
 function atualizarPeriodoLabel(){document.getElementById('filter-period-label').textContent=getPeriodoLabel();}
 function aplicarFiltros(){
@@ -586,10 +639,58 @@ function aplicarFiltros(){
   document.getElementById('filter-count').textContent=`${fil.length} de ${dados.length} itens`;
   renderAtivo();
 }
-function limparFiltros(){filtro={periodo:'tudo',offset:0,campanha:'',equipe:'',funcao:''};document.getElementById('f-campanha').value='';document.getElementById('f-equipe').value='';document.getElementById('f-funcao').value='';document.querySelectorAll('.fp-btn').forEach(b=>{b.classList.remove('active');if(b.dataset.p==='tudo')b.classList.add('active');});document.getElementById('filter-nav').style.display='none';document.getElementById('filter-clear').style.display='none';document.getElementById('filter-count').textContent='';atualizarPeriodoLabel();renderAtivo();}
+function limparFiltros(){
+  filtro={periodo:'tudo',offset:0,campanha:'',equipe:'',funcao:''};
+  document.getElementById('f-campanha').value='';
+  document.getElementById('f-equipe').value='';
+  document.getElementById('f-funcao').value='';
+  const de=document.getElementById('filtro-de');if(de)de.value='';
+  const ate=document.getElementById('filtro-ate');if(ate)ate.value='';
+  document.querySelectorAll('.fp-btn').forEach(b=>{b.classList.remove('active');if(b.dataset.p==='tudo')b.classList.add('active');});
+  document.getElementById('filter-nav').style.display='none';
+  document.getElementById('filter-intervalo').style.display='none';
+  document.getElementById('filter-clear').style.display='none';
+  document.getElementById('filter-count').textContent='';
+  atualizarPeriodoLabel();renderAtivo();
+}
 function populateFilterSelects(){const camps=[...new Set(dados.map(d=>d.camp).filter(Boolean))].sort();const profs=[...new Set(dados.map(d=>d.resp).filter(Boolean))].sort();const fc=document.getElementById('f-campanha');const fe=document.getElementById('f-equipe');const cv=fc.value,ev=fe.value;fc.innerHTML='<option value="">Todas as campanhas</option>'+camps.map(c=>`<option value="${c}">${c}</option>`).join('');fe.innerHTML='<option value="">Toda a equipe</option>'+profs.map(p=>`<option value="${p}">${p}</option>`).join('');fc.value=cv;fe.value=ev;}
 function goTab(id,el){document.querySelectorAll('.page,.page-full').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));const pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');if(el)el.classList.add('active');if(id==='dashboard')renderDashboard();else if(id==='lista')renderLista();else if(id==='kanban')renderKanban();else if(id==='equipe')renderEquipe();else if(id==='relatorio')gerarRelatorio();}
 function renderAtivo(){const aba=document.querySelector('.page.active,.page-full.active');if(!aba)return;const id=aba.id.replace('page-','');if(id==='dashboard')renderDashboard();else if(id==='lista')renderLista();else if(id==='kanban')renderKanban();else if(id==='relatorio')gerarRelatorio();else if(id==='equipe'){const perf=document.getElementById('equipe-perfil');if(perf.style.display!=='none'){const nm=perf.querySelector('.perfil-name')?.textContent;if(nm)abrirPerfil(nm);else renderEquipe();}else renderEquipe();}}
+function fotoEquipeUpload(input,nome){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    fotosEquipe[nome]=e.target.result;
+    saveFotos();
+    renderEquipe();
+  };
+  reader.readAsDataURL(file);
+}
+function fotoUpload(input,hiddenId,previewId){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const base64=e.target.result;
+    document.getElementById(hiddenId).value=base64;
+    const preview=document.getElementById(previewId);
+    preview.innerHTML=`<img src="${base64}" style="width:100%;height:100%;object-fit:cover">`;
+    // Save immediately to fotosEquipe by resp name
+    const respEl=document.getElementById(hiddenId==='f-foto'?'f-resp':'e-resp');
+    if(respEl&&respEl.value.trim()){fotosEquipe[respEl.value.trim()]=base64;saveFotos();}
+  };
+  reader.readAsDataURL(file);
+}
+function avatarHtml(resp,foto,size,fontSize){
+  const cor=avatarColor(resp);
+  const s=size||32,fs=fontSize||11;
+  const fotoReal=getFoto(resp)||foto;
+  if(fotoReal){foto=fotoReal;}
+  if(foto){
+    return`<img src="${foto}" style="width:${s}px;height:${s}px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #fff" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div style="width:${s}px;height:${s}px;border-radius:50%;background:${cor}22;color:${cor};display:none;align-items:center;justify-content:center;font-size:${fs}px;font-weight:700;flex-shrink:0">${initials(resp)}</div>`;
+  }
+  return`<div style="width:${s}px;height:${s}px;border-radius:50%;background:${cor}22;color:${cor};display:flex;align-items:center;justify-content:center;font-size:${fs}px;font-weight:700;flex-shrink:0">${initials(resp)}</div>`;
+}
 function renderDashboard(){
   const fil=dadosFiltrados();const hoje=new Date();hoje.setHours(0,0,0,0);
   const tot=fil.length,ok=fil.filter(d=>d.status==='entregue').length,late=fil.filter(d=>d.status==='atrasado').length,prog=fil.filter(d=>d.status==='andamento'||d.status==='revisao').length;
@@ -623,7 +724,7 @@ function renderDashboard(){
     const nm=p.replace(/'/g,"\'").replace(/"/g,"&quot;");
     return`<div style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="goTab('equipe',document.querySelectorAll('.nav-tab')[3]);setTimeout(()=>abrirPerfil('${nm}'),50)">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px">
-        <div style="width:32px;height:32px;border-radius:50%;background:${cor}22;color:${cor};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${initials(p)}</div>
+        ${avatarHtml(p,itens[0]?.foto||"",32,11)}
         <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p}</div><div style="font-size:11px;color:var(--text3)">${fn} · ${tot} ite${tot!==1?'ns':'m'}</div></div>
         <div style="font-size:11px;font-weight:700;color:var(--ok)">${pEnt}%</div>
       </div>
@@ -829,7 +930,7 @@ function renderKanban(){
   const colunas=[{key:'atrasado',label:'Atrasado',dot:'var(--danger)',bg:'var(--danger-bg)',cnt:'var(--danger)'},{key:'pendente',label:'Pendente',dot:'var(--text3)',bg:'var(--surface2)',cnt:'var(--text2)'},{key:'andamento',label:'Em andamento',dot:'var(--gold)',bg:'var(--gold-light)',cnt:'var(--gold-dark)'},{key:'revisao',label:'Em revisão',dot:'var(--blue)',bg:'var(--blue-light)',cnt:'var(--blue)'},{key:'entregue',label:'Entregue',dot:'var(--ok)',bg:'var(--ok-bg)',cnt:'var(--ok)'}];
   document.getElementById('kanban-board').innerHTML=colunas.map(col=>{
     const itens=fil.filter(d=>d.status===col.key);
-    const cards=itens.map(d=>{const dv=desvio(d);const nc=(comentarios[d.id]||[]).length;const nck=(checklists[d.id]||[]).length;const pr=d.prior==='urgente'?`<span class="prior-urgente">Urgente</span>`:d.prior==='alta'?`<span class="prior-alta">Alta</span>`:'';const cor=avatarColor(d.resp);const dvColor=dv.cls==='dev-late'?'var(--danger)':dv.cls==='dev-warn'?'var(--gold)':dv.cls==='dev-soon'?'var(--blue)':'var(--ok)';return`<div class="kanban-card" draggable="true" data-id="${d.id}" ondragstart="dragStart(event)" onclick="abrirEdicao(${d.id})"><div class="kanban-card-top"><span class="func-pill ${FP[d.func]||''}">${d.func}</span><span style="font-size:11px;font-weight:700;color:${dvColor}">${dv.txt}</span></div><div class="kanban-card-title">${d.ativ}</div>${pr?`<div style="margin-bottom:4px">${pr}</div>`:''}<div class="kanban-card-bottom"><div class="kanban-av" style="background:${cor}22;color:${cor}">${initials(d.resp)}</div><span class="kanban-camp">${d.camp||'—'}</span><span class="kanban-comments" style="margin-left:auto;gap:6px">${nc>0?`<span style="display:flex;align-items:center;gap:2px"><i class="ti ti-message-circle" style="font-size:12px"></i>${nc}</span>`:''}${nck>0?`<span style="display:flex;align-items:center;gap:2px"><i class="ti ti-checkbox" style="font-size:12px"></i>${nck}</span>`:''}</span></div></div>`;}).join('');
+    const cards=itens.map(d=>{const dv=desvio(d);const nc=(comentarios[d.id]||[]).length;const nck=(checklists[d.id]||[]).length;const pr=d.prior==='urgente'?`<span class="prior-urgente">Urgente</span>`:d.prior==='alta'?`<span class="prior-alta">Alta</span>`:'';const cor=avatarColor(d.resp);const dvColor=dv.cls==='dev-late'?'var(--danger)':dv.cls==='dev-warn'?'var(--gold)':dv.cls==='dev-soon'?'var(--blue)':'var(--ok)';return`<div class="kanban-card" draggable="true" data-id="${d.id}" ondragstart="dragStart(event)" onclick="abrirEdicao(${d.id})"><div class="kanban-card-top"><span class="func-pill ${FP[d.func]||''}">${d.func}</span><span style="font-size:11px;font-weight:700;color:${dvColor}">${dv.txt}</span></div><div class="kanban-card-title">${d.ativ}</div>${pr?`<div style="margin-bottom:4px">${pr}</div>`:''}<div class="kanban-card-bottom">${avatarHtml(d.resp,d.foto||"",22,9)}<span class="kanban-camp">${d.camp||'—'}</span><span class="kanban-comments" style="margin-left:auto;gap:6px">${nc>0?`<span style="display:flex;align-items:center;gap:2px"><i class="ti ti-message-circle" style="font-size:12px"></i>${nc}</span>`:''}${nck>0?`<span style="display:flex;align-items:center;gap:2px"><i class="ti ti-checkbox" style="font-size:12px"></i>${nck}</span>`:''}</span></div></div>`;}).join('');
     return`<div class="kanban-col" data-status="${col.key}" ondragover="dragOver(event)" ondrop="dragDrop(event,'${col.key}')" ondragleave="dragLeave(event)"><div class="kanban-col-header"><span class="kanban-col-dot" style="background:${col.dot}"></span><span class="kanban-col-title" style="color:${col.dot}">${col.label}</span><span class="kanban-col-count" style="background:${col.bg};color:${col.cnt}">${itens.length}</span></div><div class="kanban-cards">${itens.length?cards:`<div class="kanban-empty"><i class="ti ti-clipboard-check" style="font-size:20px;display:block;margin-bottom:6px;opacity:.3"></i>Sem itens</div>`}</div></div>`;
   }).join('');
 }
@@ -842,18 +943,27 @@ function renderEquipe(){
   document.getElementById('equipe-lista').style.display='';document.getElementById('equipe-perfil').style.display='none';
   const profs=[...new Set(dados.map(d=>d.resp))];
   if(!profs.length){document.getElementById('equipe-lista').innerHTML='<div class="empty"><i class="ti ti-users" style="font-size:28px;display:block;margin-bottom:10px;color:var(--blue)"></i>Nenhum membro cadastrado.</div>';return;}
-  document.getElementById('equipe-lista').innerHTML=`<div class="equipe-grid">${profs.map((p,i)=>{const itens=dados.filter(d=>d.resp===p);const ok=itens.filter(d=>d.status==='entregue').length;const late=itens.filter(d=>d.status==='atrasado').length;const fn=itens[0]?.func||'';const vn=itens[0]?.vinculo||'fixo';const cor=AV_COLORS[i%AV_COLORS.length];return`<div class="equipe-card" onclick="abrirPerfil('${p.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')"><div class="equipe-card-top"><div class="equipe-av" style="background:${cor}22;color:${cor}">${initials(p)}</div><div><div class="equipe-name">${p}</div><div class="equipe-tags"><span class="func-pill ${FP[fn]||''}">${fn}</span><span class="${vn==='freelancer'?'vp-free':'vp-fixo'}">${vn==='freelancer'?'Freelancer':'Fixo'}</span></div></div></div><div class="equipe-metrics"><div class="equipe-metric"><div class="equipe-metric-val kv-neu">${itens.length}</div><div class="equipe-metric-lbl">itens</div></div><div class="equipe-metric"><div class="equipe-metric-val kv-ok">${ok}</div><div class="equipe-metric-lbl">entregues</div></div><div class="equipe-metric"><div class="equipe-metric-val ${late>0?'kv-late':'kv-neu'}">${late}</div><div class="equipe-metric-lbl">atrasados</div></div></div></div>`;}).join('')}</div>`;
+  document.getElementById('equipe-lista').innerHTML=`<div class="equipe-grid">${profs.map((p,i)=>{const itens=dados.filter(d=>d.resp===p);const ok=itens.filter(d=>d.status==='entregue').length;const late=itens.filter(d=>d.status==='atrasado').length;const fn=itens[0]?.func||'';const vn=itens[0]?.vinculo||'fixo';const cor=AV_COLORS[i%AV_COLORS.length];return`<div class="equipe-card" onclick="abrirPerfil('${p.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')"><div class="equipe-card-top">${avatarHtml(p,getFoto(p),48,16)}<div><div class="equipe-name">${p}</div><div class="equipe-tags"><span class="func-pill ${FP[fn]||''}">${fn}</span><span class="${vn==='freelancer'?'vp-free':'vp-fixo'}">${vn==='freelancer'?'Freelancer':'Fixo'}</span></div></div></div><div class="equipe-metrics"><div class="equipe-metric"><div class="equipe-metric-val kv-neu">${itens.length}</div><div class="equipe-metric-lbl">itens</div></div><div class="equipe-metric"><div class="equipe-metric-val kv-ok">${ok}</div><div class="equipe-metric-lbl">entregues</div></div><div class="equipe-metric"><div class="equipe-metric-val ${late>0?'kv-late':'kv-neu'}">${late}</div><div class="equipe-metric-lbl">atrasados</div></div></div>
+      <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+        <label style="cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--text2);padding:5px 10px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface2);transition:all .15s" onclick="event.stopPropagation()" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">
+          <i class="ti ti-camera" style="font-size:13px"></i> ${getFoto(p)?'Alterar foto':'Adicionar foto'}
+          <input type="file" accept="image/*" style="display:none" onchange="fotoEquipeUpload(this,'${p.replace(/'/g,"\'").replace(/"/g,'&quot;')}')">
+        </label>
+      </div>
+    </div>`;}).join('')}</div>`;
 }
 function abrirPerfil(nome){
   const profs=[...new Set(dados.map(d=>d.resp))];const idx=profs.indexOf(nome);const cor=AV_COLORS[idx%AV_COLORS.length];
   const itens=dados.filter(d=>d.resp===nome);const ok=itens.filter(d=>d.status==='entregue').length;const late=itens.filter(d=>d.status==='atrasado').length;const fn=itens[0]?.func||'';const vn=itens[0]?.vinculo||'fixo';
   const noPrazo=itens.filter(d=>d.status==='entregue'&&d.entrega&&d.prazo&&new Date(d.entrega+'T00:00:00')<=new Date(d.prazo+'T00:00:00')).length;const taxaPrazo=ok?Math.round(noPrazo/ok*100):0;
   document.getElementById('equipe-lista').style.display='none';document.getElementById('equipe-perfil').style.display='';
-  document.getElementById('equipe-perfil').innerHTML=`<div class="perfil-back" onclick="renderEquipe()"><i class="ti ti-chevron-left"></i> Voltar para Equipe</div><div class="perfil-header"><div class="perfil-av" style="background:${cor}22;color:${cor}">${initials(nome)}</div><div class="perfil-info"><div class="perfil-name">${nome}</div><div class="equipe-tags"><span class="func-pill ${FP[fn]||''}">${fn}</span><span class="${vn==='freelancer'?'vp-free':'vp-fixo'}">${vn==='freelancer'?'Freelancer':'Fixo'}</span></div></div><div class="perfil-stats"><div class="perfil-stat"><div class="perfil-stat-val kv-neu">${itens.length}</div><div class="perfil-stat-lbl">itens</div></div><div class="perfil-stat" style="margin-left:18px"><div class="perfil-stat-val kv-ok">${ok}</div><div class="perfil-stat-lbl">entregues</div></div><div class="perfil-stat" style="margin-left:18px"><div class="perfil-stat-val ${late>0?'kv-late':'kv-neu'}">${late}</div><div class="perfil-stat-lbl">atrasados</div></div><div class="perfil-stat" style="margin-left:18px"><div class="perfil-stat-val kv-blue">${taxaPrazo}%</div><div class="perfil-stat-lbl">no prazo</div></div></div></div><div class="perfil-section-title">Entregáveis (${itens.length})</div>${itens.length?itens.map(d=>{const sc=SC[d.status],dv=desvio(d);return`<div class="perfil-item" onclick="abrirEdicao(${d.id})"><span class="func-pill ${FP[d.func]||''}">${d.func}</span><div class="perfil-item-info"><div class="perfil-item-title">${d.ativ}</div><div class="perfil-item-sub">${d.camp||'—'} · prazo ${fmt(d.prazo)}</div></div><div class="perfil-item-right"><span class="badge ${sc.cls}"><i class="ti ${sc.icon}" style="font-size:10px"></i> ${sc.label}</span><span class="dev-badge ${dv.cls}">${dv.txt}</span><i class="ti ti-pencil" style="font-size:13px;color:var(--blue)"></i></div></div>`;}).join(''):'<p style="font-size:13px;color:var(--text3);padding:1rem 0">Sem entregáveis.</p>'}`;
+  document.getElementById('equipe-perfil').innerHTML=`<div class="perfil-back" onclick="renderEquipe()"><i class="ti ti-chevron-left"></i> Voltar para Equipe</div><div class="perfil-header">${avatarHtml(nome,itens[0]?.foto||"",56,20)}<div class="perfil-info"><div class="perfil-name">${nome}</div><div class="equipe-tags"><span class="func-pill ${FP[fn]||''}">${fn}</span><span class="${vn==='freelancer'?'vp-free':'vp-fixo'}">${vn==='freelancer'?'Freelancer':'Fixo'}</span></div></div><div class="perfil-stats"><div class="perfil-stat"><div class="perfil-stat-val kv-neu">${itens.length}</div><div class="perfil-stat-lbl">itens</div></div><div class="perfil-stat" style="margin-left:18px"><div class="perfil-stat-val kv-ok">${ok}</div><div class="perfil-stat-lbl">entregues</div></div><div class="perfil-stat" style="margin-left:18px"><div class="perfil-stat-val ${late>0?'kv-late':'kv-neu'}">${late}</div><div class="perfil-stat-lbl">atrasados</div></div><div class="perfil-stat" style="margin-left:18px"><div class="perfil-stat-val kv-blue">${taxaPrazo}%</div><div class="perfil-stat-lbl">no prazo</div></div></div></div><div class="perfil-section-title">Entregáveis (${itens.length})</div>${itens.length?itens.map(d=>{const sc=SC[d.status],dv=desvio(d);return`<div class="perfil-item" onclick="abrirEdicao(${d.id})"><span class="func-pill ${FP[d.func]||''}">${d.func}</span><div class="perfil-item-info"><div class="perfil-item-title">${d.ativ}</div><div class="perfil-item-sub">${d.camp||'—'} · prazo ${fmt(d.prazo)}</div></div><div class="perfil-item-right"><span class="badge ${sc.cls}"><i class="ti ${sc.icon}" style="font-size:10px"></i> ${sc.label}</span><span class="dev-badge ${dv.cls}">${dv.txt}</span><i class="ti ti-pencil" style="font-size:13px;color:var(--blue)"></i></div></div>`;}).join(''):'<p style="font-size:13px;color:var(--text3);padding:1rem 0">Sem entregáveis.</p>'}`;
 }
 function abrirEdicao(id){
   const d=dados.find(x=>x.id==id);if(!d)return;editandoId=d.id;
-  document.getElementById('e-ativ').value=d.ativ||'';document.getElementById('e-func').value=d.func||'';document.getElementById('e-resp').value=d.resp||'';document.getElementById('e-camp').value=d.camp||'';document.getElementById('e-prazo').value=d.prazo||'';document.getElementById('e-entrega').value=d.entrega||'';document.getElementById('e-prior').value=d.prior||'normal';document.getElementById('e-vinculo').value=d.vinculo||'fixo';document.getElementById('e-link').value=d.link||'';document.getElementById('e-obs').value=d.obs||'';
+  document.getElementById('e-ativ').value=d.ativ||'';document.getElementById('e-func').value=d.func||'';document.getElementById('e-resp').value=d.resp||'';document.getElementById('e-foto').value=d.foto||'';
+  const ep=document.getElementById('e-foto-preview');
+  if(ep){ep.innerHTML=d.foto?`<img src="${d.foto}" style="width:100%;height:100%;object-fit:cover">`:'<i class="ti ti-user" style="font-size:16px"></i>';}document.getElementById('e-camp').value=d.camp||'';document.getElementById('e-prazo').value=d.prazo||'';document.getElementById('e-entrega').value=d.entrega||'';document.getElementById('e-prior').value=d.prior||'normal';document.getElementById('e-vinculo').value=d.vinculo||'fixo';document.getElementById('e-link').value=d.link||'';document.getElementById('e-obs').value=d.obs||'';
   const la=document.getElementById('e-link-open');if(d.link){la.href=d.link;la.style.display='block';}else{la.style.display='none';}
   selecionarStatus(d.status||'pendente');
   switchModalTab('detalhes',document.querySelector('.modal-tab'));
@@ -866,9 +976,10 @@ function switchModalTab(tab,el){document.querySelectorAll('.modal-tab').forEach(
 function salvarEdicao(){
   if(!editandoId)return;const idx=dados.findIndex(d=>d.id==editandoId);if(idx===-1)return;const old=dados[idx];
   const stAtivo=document.querySelector('.status-btn[class*="active-"]')?.dataset?.status||statusSelecionado||old.status;
-  const atualizado={...old,ativ:document.getElementById('e-ativ').value.trim(),func:document.getElementById('e-func').value,resp:document.getElementById('e-resp').value.trim(),camp:document.getElementById('e-camp').value.trim(),prazo:document.getElementById('e-prazo').value,entrega:document.getElementById('e-entrega').value,prior:document.getElementById('e-prior').value,vinculo:document.getElementById('e-vinculo').value,link:document.getElementById('e-link').value.trim(),obs:document.getElementById('e-obs').value.trim(),status:stAtivo};
+  const atualizado={...old,ativ:document.getElementById('e-ativ').value.trim(),func:document.getElementById('e-func').value,resp:document.getElementById('e-resp').value.trim(),foto:document.getElementById('e-foto').value.trim(),camp:document.getElementById('e-camp').value.trim(),prazo:document.getElementById('e-prazo').value,entrega:document.getElementById('e-entrega').value,prior:document.getElementById('e-prior').value,vinculo:document.getElementById('e-vinculo').value,link:document.getElementById('e-link').value.trim(),obs:document.getElementById('e-obs').value.trim(),status:stAtivo};
   if(old.status!==atualizado.status)adicionarHistorico(editandoId,`Status: ${SC[old.status].label} → ${SC[atualizado.status].label}`);
   if(old.resp!==atualizado.resp)adicionarHistorico(editandoId,`Responsável: ${old.resp} → ${atualizado.resp}`);
+  if(atualizado.foto&&atualizado.resp){fotosEquipe[atualizado.resp]=atualizado.foto;saveFotos();}
   dados[idx]=atualizado;saveLocal();populateFilterSelects();syncGS({...atualizado,action:'update'});renderAtivo();fecharModalEdicao();
 }
 function deletarAtual(){if(!editandoId||!confirm('Remover este entregável?'))return;deletarGS(editandoId);dados=dados.filter(d=>d.id!==editandoId);delete comentarios[editandoId];delete checklists[editandoId];delete historico[editandoId];saveLocal();populateFilterSelects();renderAtivo();fecharModalEdicao();}
@@ -881,11 +992,13 @@ function adicionarComentario(){const input=document.getElementById('e-novo-comen
 function removerComentario(id,idx){if(!comentarios[id])return;comentarios[id].splice(idx,1);saveLocal();renderComentariosModal(id);}
 function adicionarHistorico(id,msg){if(!historico[id])historico[id]=[];historico[id].unshift({msg,data:agora()});if(historico[id].length>20)historico[id].pop();}
 function renderHistorico(id){const lista=historico[id]||[];const el=document.getElementById('e-historico');el.innerHTML=lista.length?lista.map(h=>`<div class="historico-item"><div class="historico-icon"><i class="ti ti-history"></i></div><span style="flex:1">${h.msg}</span><span class="historico-time">${h.data}</span></div>`).join(''):'<p style="font-size:12px;color:var(--text3);text-align:center;padding:1rem">Nenhuma atividade.</p>';}
-function limpar(){['f-func','f-resp','f-vinculo','f-ativ','f-prazo','f-entrega','f-status','f-camp','f-prior','f-link','f-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.tagName==='SELECT'?el.selectedIndex=0:el.value='';});}
+function limpar(){['f-func','f-resp','f-foto','f-vinculo','f-ativ','f-prazo','f-entrega','f-status','f-camp','f-prior','f-link','f-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.tagName==='SELECT'?el.selectedIndex=0:el.value='';});}
 function salvar(){
   const func=document.getElementById('f-func').value,resp=document.getElementById('f-resp').value.trim(),ativ=document.getElementById('f-ativ').value.trim(),prazo=document.getElementById('f-prazo').value,status=document.getElementById('f-status').value;
   if(!func||!resp||!ativ||!prazo||!status){alert('Preencha os campos obrigatórios (*)');return;}
-  const novo={id:nextId++,func,resp,vinculo:document.getElementById('f-vinculo').value,ativ,prazo,entrega:document.getElementById('f-entrega').value,status,camp:document.getElementById('f-camp').value.trim(),prior:document.getElementById('f-prior').value,link:document.getElementById('f-link').value.trim(),obs:document.getElementById('f-obs').value.trim(),criadoEm:agora()};
+  const novo={id:nextId++,func,resp,foto:document.getElementById('f-foto').value.trim(),vinculo:document.getElementById('f-vinculo').value,ativ,prazo,entrega:document.getElementById('f-entrega').value,status,camp:document.getElementById('f-camp').value.trim(),prior:document.getElementById('f-prior').value,link:document.getElementById('f-link').value.trim(),obs:document.getElementById('f-obs').value.trim(),criadoEm:agora()};
+  const fotoVal=document.getElementById('f-foto').value.trim();
+  if(fotoVal&&novo.resp){fotosEquipe[novo.resp]=fotoVal;saveFotos();}
   dados.push(novo);adicionarHistorico(novo.id,'Entregável criado');saveLocal();populateFilterSelects();syncGS(novo);limpar();
   const t=document.getElementById('toast');t.style.display='flex';setTimeout(()=>t.style.display='none',2500);
   goTab('dashboard',document.querySelector('.nav-tab'));
@@ -931,7 +1044,8 @@ async function carregarDoSheets(){
         status:String(d.Status||d.status||'pendente').toLowerCase().trim(),
         prior:String(d.Prioridade||d.prior||'normal').toLowerCase().trim(),
         link:String(d.Link||d.link||''),
-        obs:String(d['Observações']||d.obs||'')
+        obs:String(d['Observações']||d.obs||''),
+        foto:String(d.Foto||d.foto||'')
       }));
       nextId=dados.reduce((m,d)=>Math.max(m,Number(d.id)||0),0)+1;
       saveLocal();populateFilterSelects();
