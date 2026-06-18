@@ -4,6 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NaCasa · Entregáveis Marketing</title>
+
+
+
+
+
+<script>
+// ══════════════════════════════════════════════
+//  CONFIGURAÇÃO SUPABASE — edite aqui
+// ══════════════════════════════════════════════
+const SUPABASE_URL = 'https://zaejvlqbfahpjbpzgmhd.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphZWp2bHFiZmFocGpicHpnbWhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODYwMDUsImV4cCI6MjA5NzM2MjAwNX0.5gb1qq8zPEqdqRGObLWw0GoVCuiojwxwZPkSMmOdcmg';
+// ══════════════════════════════════════════════
+</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -259,10 +272,38 @@ tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;
 .kanban-board{grid-template-columns:repeat(3,minmax(200px,1fr))}}
 @media(max-width:640px){.form-grid{grid-template-columns:1fr}.fg.full{grid-column:1}.kpi-grid{grid-template-columns:repeat(2,1fr)}}
 @media print{.nav,.header,.filter-bar,.btn,.toolbar{display:none!important}.page{display:block!important;padding:.5rem}body{background:#fff}}
+
+/* ── LOGIN ── */
+#login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a2580,#2B3FD4);position:fixed;inset:0;z-index:9999}
+.login-box{background:#fff;border-radius:20px;padding:2.5rem;width:100%;max-width:400px;box-shadow:0 12px 40px rgba(43,63,212,.25)}
+.login-box h1{font-size:22px;font-weight:700;color:#2B3FD4;text-align:center}
+.login-box p{font-size:11px;color:#9090b0;text-align:center;letter-spacing:.08em;text-transform:uppercase;margin-top:3px;margin-bottom:2rem}
+#login-error{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:13px;color:#dc2626;margin-bottom:14px;display:none;font-weight:600;align-items:center;gap:6px}
+.btn-login{width:100%;padding:13px;font-size:14px;font-weight:700;border-radius:8px;background:#2B3FD4;color:#fff;border:none;cursor:pointer;margin-top:8px;transition:background .15s}
+.btn-login:hover{background:#1e2fa0}
+.empresa-bar{background:#fff;border-bottom:1px solid var(--border);padding:.6rem 1.5rem;display:none;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:var(--shadow-sm)}
+.cliente-bar{background:var(--blue-light);border-bottom:1px solid var(--border2);padding:.6rem 1.5rem;display:none;align-items:center;gap:8px}
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
+<div id="login-page">
+  <div class="login-box">
+    <div style="text-align:center;margin-bottom:2rem">
+      <img src="data:image/png;base64,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" style="width:72px;height:72px;object-fit:contain;margin-bottom:12px">
+      <h1>NaCasa</h1>
+      <p>Comunicação Empresarial</p>
+    </div>
+    <div id="login-error"><i class="ti ti-alert-circle"></i> Usuário ou senha incorretos.</div>
+    <div class="fg" style="margin-bottom:16px"><label>Usuário</label><input id="l-usuario" type="text" placeholder="seu usuário" autocomplete="username"></div>
+    <div class="fg" style="margin-bottom:4px"><label>Senha</label><input id="l-senha" type="password" placeholder="sua senha" autocomplete="current-password"></div>
+    <button class="btn-login" id="btn-login" onclick="fazerLogin()"><i class="ti ti-login"></i> Entrar</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-main" style="display:none">
 <header class="header">
   <div class="header-logo">
     <img src="data:image/png;base64,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" style="width:68px;height:68px;object-fit:contain" alt="NaCasa">
@@ -287,6 +328,24 @@ tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;
   <button class="nav-add" onclick="goTab('cadastro',null)"><i class="ti ti-plus"></i> Novo entregável</button>
 </nav>
 
+
+<!-- EMPRESA BAR admin -->
+<div class="empresa-bar" id="empresa-bar">
+  <i class="ti ti-building" style="color:var(--blue);font-size:16px"></i>
+  <label style="font-size:12px;font-weight:600;color:var(--text2)">Empresa:</label>
+  <select id="empresa-select" onchange="trocarEmpresa()" style="font-size:12px;padding:6px 10px;border-radius:var(--r-sm);border:1px solid var(--border2);background:#fff;color:var(--text);font-family:'Inter',sans-serif;min-width:200px">
+    <option value="">— Todas as empresas —</option>
+  </select>
+  <button id="btn-gerenciar" onclick="abrirModalAdmin()" style="padding:6px 14px;font-size:12px;font-weight:600;border-radius:var(--r-sm);border:1.5px solid var(--border2);background:#fff;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;gap:5px"><i class="ti ti-settings"></i> Gerenciar</button>
+  <button onclick="logout()" style="margin-left:auto;padding:6px 14px;font-size:12px;font-weight:600;border-radius:var(--r-sm);border:1.5px solid var(--border2);background:#fff;color:var(--danger);cursor:pointer;display:inline-flex;align-items:center;gap:5px"><i class="ti ti-logout"></i> Sair</button>
+</div>
+<!-- CLIENTE BAR -->
+<div class="cliente-bar" id="cliente-bar">
+  <i class="ti ti-building" style="color:var(--blue);font-size:16px"></i>
+  <span style="font-size:13px;font-weight:700;color:var(--blue)" id="cliente-empresa-nome"></span>
+  <span style="font-size:12px;color:var(--text2)">— seus entregáveis</span>
+  <button onclick="logout()" style="margin-left:auto;padding:5px 12px;font-size:12px;font-weight:600;border-radius:6px;border:1.5px solid var(--border2);background:#fff;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;gap:5px"><i class="ti ti-logout"></i> Sair</button>
+</div>
 <div class="filter-bar" id="filter-bar">
   <div class="filter-period">
     <button class="fp-btn" data-p="semana" onclick="setPeriodo('semana',this)">Semana</button>
@@ -402,18 +461,9 @@ tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;
     <h2><i class="ti ti-clipboard-plus" style="font-size:18px;vertical-align:-2px;margin-right:6px"></i>Adicionar entregável</h2>
     <div id="toast" class="toast"><i class="ti ti-circle-check"></i> Entregável salvo!</div>
     <div class="form-grid">
-      <div class="fg"><label>Função *</label><select id="f-func"><option value="">Selecione...</option><option>Fotógrafo</option><option>Design</option><option>Social Media</option><option>Videomaker</option><option>Tráfego Pago</option><option>Copywriter</option></select></div>
-      <div class="fg"><label>Responsável *</label><input id="f-resp" type="text" placeholder="Nome"></div>
-      <div class="fg"><label>Foto do responsável</label>
-        <div style="display:flex;align-items:center;gap:10px">
-          <div id="f-foto-preview" style="width:40px;height:40px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--blue);flex-shrink:0;overflow:hidden;border:2px solid var(--border2)"><i class="ti ti-user" style="font-size:16px"></i></div>
-          <label style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r-sm);border:1.5px solid var(--border2);font-size:12px;font-weight:600;color:var(--text2);background:var(--white);transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">
-            <i class="ti ti-upload" style="font-size:14px"></i> Escolher foto
-            <input type="file" accept="image/*" style="display:none" onchange="fotoUpload(this,'f-foto','f-foto-preview')">
-          </label>
-          <input type="hidden" id="f-foto">
-        </div>
-      </div>
+      <div class="fg"><label>Função *</label><select id="f-func" onchange="atualizarMembrosPorFuncao('f-func','f-resp')"><option value="">Selecione...</option></select></div>
+      <div class="fg"><label>Responsável *</label><select id="f-resp"><option value="">Selecione a função primeiro...</option></select></div>
+      <input type="hidden" id="f-foto">
       <div class="fg"><label>Vínculo</label><select id="f-vinculo"><option value="fixo">Fixo</option><option value="freelancer">Freelancer</option></select></div>
       <div class="fg"><label>Campanha</label><input id="f-camp" type="text" placeholder="Ex: Aurora"></div>
       <div class="fg full"><label>Atividade / Entregável *</label><input id="f-ativ" type="text" placeholder="Descreva o que deve ser entregue"></div>
@@ -448,8 +498,8 @@ tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;
       <div class="modal-tab-content active" id="mtab-detalhes">
         <div class="fg full" style="margin-bottom:12px"><label>Entregável</label><input id="e-ativ" type="text"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-          <div class="fg"><label>Função</label><select id="e-func"><option>Fotógrafo</option><option>Design</option><option>Social Media</option><option>Videomaker</option><option>Tráfego Pago</option><option>Copywriter</option></select></div>
-          <div class="fg"><label>Responsável</label><input id="e-resp" type="text"></div>
+          <div class="fg"><label>Função</label><select id="e-func" onchange="atualizarMembrosPorFuncao('e-func','e-resp')"><option value="">Selecione...</option></select></div>
+          <div class="fg"><label>Responsável</label><select id="e-resp"><option value="">Selecione...</option></select></div>
           <div class="fg"><label>Foto do responsável</label>
             <div style="display:flex;align-items:center;gap:10px">
               <div id="e-foto-preview" style="width:40px;height:40px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--blue);flex-shrink:0;overflow:hidden;border:2px solid var(--border2)"><i class="ti ti-user" style="font-size:16px"></i></div>
@@ -515,33 +565,91 @@ tbody td{padding:11px 12px;font-size:13px;vertical-align:middle;overflow:hidden;
   </div>
 </div>
 
-<div class="modal-bg" id="modal-sheets">
-  <div class="sheets-modal">
-    <h2><i class="ti ti-table" style="font-size:18px;vertical-align:-2px;margin-right:8px"></i>Integração Google Sheets</h2>
-    <p>Cole a URL do Apps Script para sincronizar com a planilha em tempo real.</p>
-    <input class="gs-url-input" id="gs-url" type="url" placeholder="https://script.google.com/macros/s/...">
-    <div class="modal-foot">
-      <button class="btn btn-primary" onclick="salvarGS()"><i class="ti ti-link"></i> Conectar</button>
-      <button class="btn btn-ghost" onclick="fecharModalSheets()">Cancelar</button>
-      <button class="btn btn-danger-outline btn-sm" style="margin-left:auto" onclick="desconectarGS()">Desconectar</button>
-    </div>
-  </div>
-</div>
+<!-- Modal Sheets removido — substituído pelo Supabase -->
 
 <script>
-const FUNCS=["Fotógrafo","Design","Social Media","Videomaker","Tráfego Pago","Copywriter"];
+let FUNCS=["Fotógrafo","Design","Social Media","Videomaker","Tráfego Pago","Copywriter"];
 const SC={entregue:{label:"Entregue",cls:"b-entregue",icon:"ti-circle-check"},andamento:{label:"Em andamento",cls:"b-andamento",icon:"ti-loader"},atrasado:{label:"Atrasado",cls:"b-atrasado",icon:"ti-alert-circle"},revisao:{label:"Em revisão",cls:"b-revisao",icon:"ti-eye"},pendente:{label:"Pendente",cls:"b-pendente",icon:"ti-clock"}};
-const FP={"Fotógrafo":"fp-foto","Design":"fp-design","Social Media":"fp-social","Videomaker":"fp-video","Tráfego Pago":"fp-trafego","Copywriter":"fp-copy"};
+const FP_CORES=["fp-foto","fp-design","fp-social","fp-video","fp-trafego","fp-copy","fp-foto","fp-design"];
+let FP={"Fotógrafo":"fp-foto","Design":"fp-design","Social Media":"fp-social","Videomaker":"fp-video","Tráfego Pago":"fp-trafego","Copywriter":"fp-copy"};
+
+function reconstruirFP(){
+  FP={};
+  FUNCS.forEach((f,i)=>{FP[f]=FP_CORES[i%FP_CORES.length];});
+}
+
+let _equipe=[];
+
+async function carregarEquipe(){
+  try{
+    const rows=await sbGet('equipe','select=*&order=nome');
+    _equipe=rows||[];
+  }catch(e){_equipe=[];}
+}
+
+function atualizarMembrosPorFuncao(funcSelId, respSelId){
+  const func=document.getElementById(funcSelId)?.value||'';
+  const sel=document.getElementById(respSelId);
+  if(!sel)return;
+  const membros=func?_equipe.filter(m=>m.func===func):_equipe;
+  if(membros.length===0){
+    sel.innerHTML='<option value="">Nenhum membro cadastrado para esta função</option>';
+  }else{
+    sel.innerHTML='<option value="">Selecione...</option>'+membros.map(m=>`<option value="${m.nome}">${m.nome}</option>`).join('');
+  }
+  // Preenche vínculo automaticamente
+  sel.onchange=function(){
+    const membro=_equipe.find(m=>m.nome===this.value);
+    const vinculoId=respSelId==='f-resp'?'f-vinculo':'e-vinculo';
+    const vinculoEl=document.getElementById(vinculoId);
+    if(vinculoEl&&membro)vinculoEl.value=membro.vinculo||'fixo';
+  };
+}
+
+async function carregarFuncoes(){
+  try{
+    const rows=await sbGet('funcoes','select=*&order=nome');
+    if(rows&&rows.length>0){
+      FUNCS=rows.map(r=>r.nome);
+      reconstruirFP();
+      atualizarSelectsFuncao();
+    }
+  }catch(e){
+    reconstruirFP();
+    atualizarSelectsFuncao();
+  }
+}
+
+function atualizarSelectsFuncao(){
+  // Select do formulário de novo entregável
+  const sel=document.getElementById('f-func');
+  if(sel){
+    const val=sel.value;
+    sel.innerHTML='<option value="">Selecione...</option>'+FUNCS.map(f=>`<option value="${f}"${f===val?' selected':''}>${f}</option>`).join('');
+  }
+  // Select do filtro de funções
+  const selF=document.getElementById('f-funcao');
+  if(selF){
+    const val=selF.value;
+    selF.innerHTML='<option value="">Todas as funções</option>'+FUNCS.map(f=>`<option value="${f}"${f===val?' selected':''}>${f}</option>`).join('');
+  }
+  // Select do modal de edição
+  const selE=document.getElementById('e-func');
+  if(selE){
+    const val=selE.value;
+    selE.innerHTML='<option value="">Selecione...</option>'+FUNCS.map(f=>`<option value="${f}"${f===val?' selected':''}>${f}</option>`).join('');
+  }
+}
 const AV_COLORS=["#2B3FD4","#D4960A","#16a34a","#dc2626","#7c3aed","#0891b2","#db2777","#059669"];
-let dados=JSON.parse(localStorage.getItem('mkt_v2')||'[]');
-let comentarios=JSON.parse(localStorage.getItem('mkt_comentarios')||'{}');
-let checklists=JSON.parse(localStorage.getItem('mkt_checklists')||'{}');
-let historico=JSON.parse(localStorage.getItem('mkt_historico')||'{}');
+let dados=[];
+let comentarios={};
+let checklists={};
+let historico={};
 let nextId=dados.reduce((m,d)=>Math.max(m,Number(d.id)||0),0)+1;
-let gsUrl=localStorage.getItem('mkt_gs_url')||'';
+let gsUrl='';
 let editandoId=null,statusSelecionado='pendente';
 let filtro={periodo:'tudo',offset:0,campanha:'',equipe:'',funcao:''};
-let fotosEquipe=JSON.parse(localStorage.getItem('mkt_fotos')||'{}');
+let fotosEquipe={};
 function saveFotos(){localStorage.setItem('mkt_fotos',JSON.stringify(fotosEquipe));}
 function getFoto(resp){return fotosEquipe[resp]||dados.find(d=>d.resp===resp&&d.foto)?.foto||'';}
 let calNavOffset=0;
@@ -638,7 +746,7 @@ function limparFiltros(){
   atualizarPeriodoLabel();renderAtivo();
 }
 function populateFilterSelects(){const camps=[...new Set(dados.map(d=>d.camp).filter(Boolean))].sort();const profs=[...new Set(dados.map(d=>d.resp).filter(Boolean))].sort();const fc=document.getElementById('f-campanha');const fe=document.getElementById('f-equipe');const cv=fc.value,ev=fe.value;fc.innerHTML='<option value="">Todas as campanhas</option>'+camps.map(c=>`<option value="${c}">${c}</option>`).join('');fe.innerHTML='<option value="">Toda a equipe</option>'+profs.map(p=>`<option value="${p}">${p}</option>`).join('');fc.value=cv;fe.value=ev;}
-function goTab(id,el){document.querySelectorAll('.page,.page-full').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));const pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');if(el)el.classList.add('active');if(id==='dashboard')renderDashboard();else if(id==='lista')renderLista();else if(id==='kanban')renderKanban();else if(id==='equipe')renderEquipe();else if(id==='relatorio')gerarRelatorio();}
+function goTab(id,el){document.querySelectorAll('.page,.page-full').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));const pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');if(el)el.classList.add('active');if(id==='dashboard')renderDashboard();else if(id==='lista')renderLista();else if(id==='kanban')renderKanban();else if(id==='equipe')renderEquipe();else if(id==='relatorio')gerarRelatorio();else if(id==='cadastro'){atualizarSelectsFuncao();atualizarMembrosPorFuncao('f-func','f-resp');}}
 function renderAtivo(){const aba=document.querySelector('.page.active,.page-full.active');if(!aba)return;const id=aba.id.replace('page-','');if(id==='dashboard')renderDashboard();else if(id==='lista')renderLista();else if(id==='kanban')renderKanban();else if(id==='relatorio')gerarRelatorio();else if(id==='equipe'){const perf=document.getElementById('equipe-perfil');if(perf.style.display!=='none'){const nm=perf.querySelector('.perfil-name')?.textContent;if(nm)abrirPerfil(nm);else renderEquipe();}else renderEquipe();}}
 function comprimirFoto(file,cb){
   const reader=new FileReader();
@@ -990,11 +1098,13 @@ function adicionarHistorico(id,msg){if(!historico[id])historico[id]=[];historico
 function renderHistorico(id){const lista=historico[id]||[];const el=document.getElementById('e-historico');el.innerHTML=lista.length?lista.map(h=>`<div class="historico-item"><div class="historico-icon"><i class="ti ti-history"></i></div><span style="flex:1">${h.msg}</span><span class="historico-time">${h.data}</span></div>`).join(''):'<p style="font-size:12px;color:var(--text3);text-align:center;padding:1rem">Nenhuma atividade.</p>';}
 function limpar(){['f-func','f-resp','f-foto','f-vinculo','f-ativ','f-prazo','f-entrega','f-status','f-camp','f-prior','f-link','f-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.tagName==='SELECT'?el.selectedIndex=0:el.value='';});}
 function salvar(){
-  const func=document.getElementById('f-func').value,resp=document.getElementById('f-resp').value.trim(),ativ=document.getElementById('f-ativ').value.trim(),prazo=document.getElementById('f-prazo').value,status=document.getElementById('f-status').value;
+  const func=document.getElementById('f-func').value,resp=document.getElementById('f-resp').value,ativ=document.getElementById('f-ativ').value.trim(),prazo=document.getElementById('f-prazo').value,status=document.getElementById('f-status').value;
   if(!func||!resp||!ativ||!prazo||!status){alert('Preencha os campos obrigatórios (*)');return;}
-  const novo={id:nextId++,func,resp,foto:document.getElementById('f-foto').value.trim(),vinculo:document.getElementById('f-vinculo').value,ativ,prazo,entrega:document.getElementById('f-entrega').value,status,camp:document.getElementById('f-camp').value.trim(),prior:document.getElementById('f-prior').value,link:document.getElementById('f-link').value.trim(),obs:document.getElementById('f-obs').value.trim(),criadoEm:agora()};
-  const fotoVal=document.getElementById('f-foto').value.trim();
-  if(fotoVal&&novo.resp){fotosEquipe[novo.resp]=fotoVal;saveFotos();}
+  const membro=_equipe.find(m=>m.nome===resp);
+  const foto=membro?.foto||getFoto(resp)||'';
+  const vinculo=membro?.vinculo||document.getElementById('f-vinculo').value||'fixo';
+  const novo={id:nextId++,func,resp,foto,vinculo,ativ,prazo,entrega:document.getElementById('f-entrega').value,status,camp:document.getElementById('f-camp').value.trim(),prior:document.getElementById('f-prior').value,link:document.getElementById('f-link').value.trim(),obs:document.getElementById('f-obs').value.trim(),criadoEm:agora(),_isNew:true};
+  if(foto&&resp){fotosEquipe[resp]=foto;saveFotos();}
   dados.push(novo);adicionarHistorico(novo.id,'Entregável criado');saveLocal();populateFilterSelects();syncGS(novo);limpar();
   const t=document.getElementById('toast');t.style.display='flex';setTimeout(()=>t.style.display='none',2500);
   goTab('dashboard',document.querySelector('.nav-tab'));
@@ -1095,19 +1205,654 @@ async function deletarGS(id){
   try{await fetch(gsUrl+'?data='+payload,{cache:'no-store'});}
   catch(e){try{await fetch(gsUrl+'?data='+payload,{mode:'no-cors'});}catch(e2){}}
 }
-document.getElementById('modal-edicao').addEventListener('click',function(e){if(e.target===this)fecharModalEdicao();});
-document.getElementById('modal-sheets').addEventListener('click',function(e){if(e.target===this)fecharModalSheets();});
+// ══════ SYNC SUPABASE ══════
+
+async function syncGS(item){
+  // Mantém nome syncGS para compatibilidade com o restante do código
+  const lbl=document.getElementById('gs-label');
+  const payload={
+    func:item.func,
+    resp:item.resp,
+    vinculo:item.vinculo,
+    ativ:item.ativ,
+    camp:item.camp,
+    prazo:item.prazo||null,
+    entrega:item.entrega||null,
+    status:item.status,
+    prior:item.prior,
+    link:item.link,
+    obs:item.obs,
+    foto:getFoto(item.resp)||'',
+    empresa:_empresaFiltro||''
+  };
+  try{
+    if(lbl)lbl.textContent='⟳ Salvando...';
+    if(item.action==='delete'){
+      await sbDelete('entregaveis',item.id);
+    }else if(item._isNew){
+      const rows=await sbPost('entregaveis',payload);
+      // Atualiza id local com id real do banco
+      if(rows&&rows[0]){
+        const idx=dados.findIndex(d=>d.id===item.id);
+        if(idx>=0){dados[idx].id=rows[0].id;saveLocal();}
+      }
+    }else{
+      await sbPatch('entregaveis',item.id,payload);
+    }
+    if(lbl)lbl.textContent='✓ Salvo!';
+    setTimeout(()=>{if(lbl)lbl.textContent='Supabase conectado';},1500);
+  }catch(e){
+    console.warn('Sync Supabase falhou:',e);
+    if(lbl)lbl.textContent='Erro ao salvar';
+    setTimeout(()=>{if(lbl)lbl.textContent='Supabase conectado';},3000);
+  }
+}
+
+async function deletarGS(id){
+  try{await sbDelete('entregaveis',id);}
+  catch(e){console.warn('Erro ao deletar:',e);}
+}
+
+async function carregarDoSheets(){
+  // Mantém nome para compatibilidade
+  await _carregarDadosCliente();
+  const lbl=document.getElementById('gs-label');
+  if(lbl)lbl.textContent='Supabase conectado';
+}
+
+function abrirModalSheets(){
+  alert('O app agora usa Supabase. Configure SUPABASE_URL e SUPABASE_KEY no início do arquivo.');
+}
+function fecharModalSheets(){}
+function salvarGS(){}
+function desconectarGS(){}
+function atualizarBadgeGS(){
+  const btn=document.getElementById('gs-btn'),lbl=document.getElementById('gs-label');
+  if(btn)btn.classList.add('connected');
+  if(lbl)lbl.textContent='Supabase conectado';
+}
 document.getElementById('e-novo-comentario').addEventListener('keydown',function(e){if(e.key==='Enter')adicionarComentario();});
 document.getElementById('e-nova-tarefa').addEventListener('keydown',function(e){if(e.key==='Enter')adicionarTarefa();});
 document.getElementById('e-link').addEventListener('input',function(){const a=document.getElementById('e-link-open');if(this.value){a.href=this.value;a.style.display='block';}else{a.style.display='none';}});
-gsUrl='https://script.google.com/macros/s/AKfycby9vj4XisaauaAx0tgnzhz-MOn74PFNgRPSEhpHZdFDD6ldIivH1iM_OJW7oOF3-r44/exec';
-localStorage.setItem('mkt_gs_url',gsUrl);
-atualizarBadgeGS();populateFilterSelects();atualizarPeriodoLabel();
-// Sempre carrega do Sheets primeiro — ignora cache local se Sheets disponível
-carregarDoSheets().then(()=>{
-  if(dados.length===0)renderDashboard();
-});
-setInterval(()=>carregarDoSheets(),60000);
+// Aguarda login para iniciar
+populateFilterSelects();atualizarPeriodoLabel();
+
+
+// ══════ SUPABASE — helpers ══════
+
+function sbHeaders(){
+  return{
+    'Content-Type':'application/json',
+    'apikey':SUPABASE_KEY,
+    'Authorization':'Bearer '+SUPABASE_KEY
+  };
+}
+
+async function sbGet(table,params=''){
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`,{headers:sbHeaders()});
+  if(!r.ok)throw new Error('Supabase GET '+table+': '+r.status);
+  return r.json();
+}
+
+async function sbPost(table,body){
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}`,{
+    method:'POST',
+    headers:{...sbHeaders(),'Prefer':'return=representation'},
+    body:JSON.stringify(body)
+  });
+  if(!r.ok)throw new Error('Supabase POST '+table+': '+r.status);
+  return r.json();
+}
+
+async function sbPatch(table,id,body){
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`,{
+    method:'PATCH',
+    headers:{...sbHeaders(),'Prefer':'return=representation'},
+    body:JSON.stringify(body)
+  });
+  if(!r.ok)throw new Error('Supabase PATCH '+table+': '+r.status);
+  return r.json();
+}
+
+async function sbDelete(table,id){
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`,{
+    method:'DELETE',
+    headers:sbHeaders()
+  });
+  if(!r.ok)throw new Error('Supabase DELETE '+table+': '+r.status);
+}
+
+// ══════ LOGIN / EMPRESA ══════
+
+let _usuario=null;
+let _empresas=[];
+let _empresaFiltro='';
+
+async function fazerLogin(){
+  const u=document.getElementById('l-usuario').value.trim();
+  const s=document.getElementById('l-senha').value.trim();
+  if(!u||!s)return;
+  const btn=document.getElementById('btn-login');
+  btn.innerHTML='<i class="ti ti-loader"></i> Entrando...';btn.disabled=true;
+  try{
+    // Busca usuário por login + senha
+    const rows=await sbGet('usuarios',`login=eq.${encodeURIComponent(u)}&senha=eq.${encodeURIComponent(s)}&select=*`);
+    if(rows&&rows.length>0){
+      _usuario={ok:true,...rows[0]};
+      localStorage.setItem('mkt_sessao',JSON.stringify(_usuario));
+      document.getElementById('login-page').style.display='none';
+      document.getElementById('app-main').style.display='block';
+      if(_usuario.perfil==='admin'){
+        document.getElementById('empresa-bar').style.display='flex';
+        await _carregarEmpresas();
+      }else{
+        document.getElementById('cliente-bar').style.display='flex';
+        document.getElementById('cliente-empresa-nome').textContent=_usuario.empresa||'';
+        _empresaFiltro=_usuario.empresa||'';
+        // Cliente pode cadastrar entregáveis, mas não gerenciar
+        document.getElementById('gs-btn').style.display='none';
+      }
+      await _carregarDadosCliente();
+      await carregarFuncoes();
+      await carregarEquipe();
+      renderDashboard();
+        // Atualiza dados a cada 60s em tempo real
+      setInterval(()=>_carregarDadosCliente(),60000);
+    }else{
+      document.getElementById('login-error').style.display='flex';
+      btn.innerHTML='<i class="ti ti-login"></i> Entrar';btn.disabled=false;
+    }
+  }catch(e){
+    console.error(e);
+    btn.innerHTML='<i class="ti ti-login"></i> Entrar';btn.disabled=false;
+    document.getElementById('login-error').style.display='flex';
+  }
+}
+
+async function _carregarEmpresas(){
+  try{
+    const rows=await sbGet('empresas','select=id,nome&order=nome');
+    _empresas=rows||[];
+    const opts=_empresas.map(e=>`<option value="${e.nome}">${e.nome}</option>`).join('');
+    const sel=document.getElementById('empresa-select');
+    if(sel)sel.innerHTML='<option value="">— Todas as empresas —</option>'+opts;
+  }catch(e){console.error('Erro ao carregar empresas:',e);}
+}
+
+async function _carregarDadosCliente(){
+  try{
+    let params='select=*&order=id';
+    if(_empresaFiltro)params+=`&empresa=eq.${encodeURIComponent(_empresaFiltro)}`;
+    const rows=await sbGet('entregaveis',params);
+    if(Array.isArray(rows)){
+      dados=rows.map(d=>({
+        id:Number(d.id||0),
+        func:String(d.func||''),
+        resp:String(d.resp||''),
+        vinculo:String(d.vinculo||'fixo'),
+        ativ:String(d.ativ||''),
+        camp:String(d.camp||''),
+        prazo:parseDate(d.prazo),
+        entrega:parseDate(d.entrega),
+        status:String(d.status||'pendente').toLowerCase().trim(),
+        prior:String(d.prior||'normal').toLowerCase().trim(),
+        link:String(d.link||''),
+        obs:String(d.obs||''),
+        foto:String(d.foto||''),
+        empresa:String(d.empresa||'')
+      }));
+      nextId=dados.reduce((m,d)=>Math.max(m,Number(d.id)||0),0)+1;
+      populateFilterSelects();
+    }
+    renderAtivo();
+  }catch(e){console.error('Erro ao carregar dados:',e);}
+}
+
+async function trocarEmpresa(){
+  _empresaFiltro=document.getElementById('empresa-select').value;
+  await _carregarDadosCliente();
+}
+
+function logout(){
+  _usuario=null;dados=[];_empresas=[];_empresaFiltro='';
+  localStorage.removeItem('mkt_sessao');
+  document.getElementById('app-main').style.display='none';
+  document.getElementById('login-page').style.display='flex';
+  document.getElementById('empresa-bar').style.display='none';
+  document.getElementById('cliente-bar').style.display='none';
+  document.getElementById('l-senha').value='';
+  document.getElementById('login-error').style.display='none';
+  document.getElementById('btn-login').innerHTML='<i class="ti ti-login"></i> Entrar';
+  document.getElementById('btn-login').disabled=false;
+}
+
+async function abrirModalAdmin(){
+  const div=document.createElement('div');
+  div.id='modal-admin-bg';
+  div.style.cssText='position:fixed;inset:0;background:rgba(18,19,42,.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)';
+  div.onclick=e=>{if(e.target===div)div.remove();};
+  div.innerHTML=`<div style="background:#fff;border-radius:16px;width:100%;max-width:480px;box-shadow:0 12px 40px rgba(43,63,212,.2);overflow:hidden">
+    <div style="padding:1.25rem 1.5rem;background:linear-gradient(135deg,var(--blue),var(--blue-dark));display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <h2 style="font-size:16px;font-weight:700;color:#fff"><i class="ti ti-settings" style="margin-right:8px"></i>Administração</h2>
+        <p style="font-size:12px;color:rgba(255,255,255,.6);margin-top:2px">Selecione o que deseja gerenciar</p>
+      </div>
+      <button onclick="document.getElementById('modal-admin-bg').remove()" style="background:rgba(255,255,255,.15);border:none;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px">✕</button>
+    </div>
+    <div style="padding:1.25rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <button onclick="admAbrirSecao('empresas')" style="background:var(--white);border:1.5px solid var(--border2);border-radius:12px;padding:1.25rem 1rem;cursor:pointer;text-align:left;transition:all .15s;display:flex;flex-direction:column;gap:8px" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--blue-light)'" onmouseout="this.style.borderColor='var(--border2)';this.style.background='var(--white)'">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--blue-light);display:flex;align-items:center;justify-content:center"><i class="ti ti-building" style="font-size:20px;color:var(--blue)"></i></div>
+        <div><div style="font-size:13px;font-weight:700;color:var(--text)">Empresas</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Cadastrar e gerenciar</div></div>
+      </button>
+      <button onclick="admAbrirSecao('funcoes')" style="background:var(--white);border:1.5px solid var(--border2);border-radius:12px;padding:1.25rem 1rem;cursor:pointer;text-align:left;transition:all .15s;display:flex;flex-direction:column;gap:8px" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--blue-light)'" onmouseout="this.style.borderColor='var(--border2)';this.style.background='var(--white)'">
+        <div style="width:40px;height:40px;border-radius:10px;background:#fdf3d7;display:flex;align-items:center;justify-content:center"><i class="ti ti-briefcase" style="font-size:20px;color:var(--gold-dark)"></i></div>
+        <div><div style="font-size:13px;font-weight:700;color:var(--text)">Funções</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Tipos de serviço</div></div>
+      </button>
+      <button onclick="admAbrirSecao('equipe')" style="background:var(--white);border:1.5px solid var(--border2);border-radius:12px;padding:1.25rem 1rem;cursor:pointer;text-align:left;transition:all .15s;display:flex;flex-direction:column;gap:8px" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--blue-light)'" onmouseout="this.style.borderColor='var(--border2)';this.style.background='var(--white)'">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--ok-bg);display:flex;align-items:center;justify-content:center"><i class="ti ti-id-badge" style="font-size:20px;color:var(--ok)"></i></div>
+        <div><div style="font-size:13px;font-weight:700;color:var(--text)">Equipe</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Membros e freelancers</div></div>
+      </button>
+    </div>
+  </div>`;
+  document.body.appendChild(div);
+}
+
+async function admAbrirSecao(secao){
+  document.getElementById('modal-admin-bg')?.remove();
+  const configs={
+    empresas:{titulo:'Empresas',icone:'ti-building',cor:'var(--blue)',corBg:'var(--blue-light)'},
+    funcoes:{titulo:'Funções da Equipe',icone:'ti-briefcase',cor:'var(--gold-dark)',corBg:'#fdf3d7'},
+    equipe:{titulo:'Membros da Equipe',icone:'ti-id-badge',cor:'var(--ok)',corBg:'var(--ok-bg)'},
+    usuarios:{titulo:'Acesso por Empresa',icone:'ti-lock',cor:'var(--info)',corBg:'var(--info-bg)'},
+  };
+  const cfg=configs[secao];
+  const div=document.createElement('div');
+  div.id='modal-secao-bg';
+  div.style.cssText='position:fixed;inset:0;background:rgba(18,19,42,.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)';
+  div.onclick=e=>{if(e.target===div)div.remove();};
+
+  let conteudo='';
+  if(secao==='empresas') conteudo=`
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="adm-empresa" type="text" placeholder="Nome da empresa" style="flex:1;font-size:13px;padding:9px 12px;border-radius:var(--r-sm);border:1.5px solid var(--border2);font-family:'Inter',sans-serif">
+      <button onclick="admAddEmpresa()" style="padding:9px 16px;font-size:13px;font-weight:600;border-radius:var(--r-sm);background:var(--blue);color:#fff;border:none;cursor:pointer;white-space:nowrap"><i class="ti ti-plus"></i> Adicionar</button>
+    </div>
+    <select id="adm-busca-empresa" onchange="admFiltrarEmpresas()" style="font-size:12px;padding:7px 10px;border-radius:var(--r-sm);border:1.5px solid var(--border2);font-family:'Inter',sans-serif;margin-bottom:16px;width:100%;background:var(--white)"><option value="">— Ver todas as empresas —</option></select>
+    <div id="adm-lista-empresas" style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px"></div>
+    <div style="height:1px;background:var(--border);margin-bottom:16px"></div>
+    <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-lock" style="color:var(--blue)"></i> Login de acesso por empresa</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="fg"><label>Usuário</label><input id="adm-user" type="text"></div>
+      <div class="fg"><label>Senha</label><input id="adm-pass" type="password"></div>
+    </div>
+    <div class="fg" style="margin-bottom:12px"><label>Empresa</label>
+      <select id="adm-emp" style="font-size:13px;padding:10px 12px;border-radius:var(--r-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);font-family:'Inter',sans-serif;width:100%"></select>
+    </div>
+    <button onclick="admAddUsuario()" style="width:100%;padding:11px;font-size:13px;font-weight:700;border-radius:var(--r-sm);background:var(--blue);color:#fff;border:none;cursor:pointer;margin-bottom:14px"><i class="ti ti-lock"></i> Criar acesso para empresa</button>
+    <select id="adm-busca-usuario" onchange="admFiltrarUsuarios()" style="font-size:12px;padding:7px 10px;border-radius:var(--r-sm);border:1.5px solid var(--border2);font-family:'Inter',sans-serif;margin-bottom:8px;width:100%;background:var(--white)"><option value="">— Ver acessos cadastrados —</option></select>
+    <div id="adm-lista-usuarios" style="display:flex;flex-direction:column;gap:6px"></div>`;
+
+  if(secao==='funcoes') conteudo=`
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="adm-funcao" type="text" placeholder="Ex: Gestor de Tráfego" style="flex:1;font-size:13px;padding:9px 12px;border-radius:var(--r-sm);border:1.5px solid var(--border2);font-family:'Inter',sans-serif">
+      <button onclick="admAddFuncao()" style="padding:9px 16px;font-size:13px;font-weight:600;border-radius:var(--r-sm);background:var(--blue);color:#fff;border:none;cursor:pointer;white-space:nowrap"><i class="ti ti-plus"></i> Adicionar</button>
+    </div>
+    <select id="adm-busca-funcao" onchange="admFiltrarFuncoes()" style="font-size:12px;padding:7px 10px;border-radius:var(--r-sm);border:1.5px solid var(--border2);font-family:'Inter',sans-serif;margin-bottom:8px;width:100%;background:var(--white)"><option value="">— Ver todas as funções —</option></select>
+    <div id="adm-lista-funcoes" style="display:flex;flex-direction:column;gap:6px"></div>`;
+
+  if(secao==='equipe') conteudo=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div class="fg"><label>Nome</label><input id="adm-eq-nome" type="text" placeholder="Nome completo"></div>
+      <div class="fg"><label>Função</label><select id="adm-eq-func" style="font-size:13px;padding:10px 12px;border-radius:var(--r-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);font-family:'Inter',sans-serif;width:100%"></select></div>
+      <div class="fg"><label>Vínculo</label><select id="adm-eq-vinculo" style="font-size:13px;padding:10px 12px;border-radius:var(--r-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);font-family:'Inter',sans-serif;width:100%"><option value="fixo">Fixo</option><option value="freelancer">Freelancer</option></select></div>
+      <div class="fg"><label>Foto</label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div id="adm-eq-foto-preview" style="width:36px;height:36px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border:2px solid var(--border2)"><i class="ti ti-user" style="font-size:14px;color:var(--blue)"></i></div>
+          <label style="cursor:pointer;font-size:12px;font-weight:600;padding:6px 10px;border-radius:var(--r-sm);border:1.5px solid var(--border2);color:var(--text2);background:var(--white)"><i class="ti ti-upload" style="font-size:12px"></i> Foto<input type="file" accept="image/*" style="display:none" onchange="admEqFotoUpload(this)"></label>
+          <input type="hidden" id="adm-eq-foto">
+        </div>
+      </div>
+    </div>
+    <button onclick="admAddMembro()" style="width:100%;padding:10px;font-size:13px;font-weight:700;border-radius:var(--r-sm);background:var(--blue);color:#fff;border:none;cursor:pointer;margin-bottom:12px"><i class="ti ti-user-plus"></i> Adicionar membro</button>
+    <select id="adm-busca-membro" onchange="admFiltrarMembros()" style="font-size:12px;padding:7px 10px;border-radius:var(--r-sm);border:1.5px solid var(--border2);font-family:'Inter',sans-serif;margin-bottom:8px;width:100%;background:var(--white)"><option value="">— Ver todos os membros —</option></select>
+    <div id="adm-lista-membros" style="display:flex;flex-direction:column;gap:6px"></div>`;
+
+  if(secao==='usuarios') conteudo=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="fg"><label>Usuário</label><input id="adm-user" type="text"></div>
+      <div class="fg"><label>Senha</label><input id="adm-pass" type="password"></div>
+    </div>
+    <div class="fg" style="margin-bottom:12px"><label>Empresa</label>
+      <select id="adm-emp" style="font-size:13px;padding:10px 12px;border-radius:var(--r-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);font-family:'Inter',sans-serif;width:100%"></select>
+    </div>
+    <button onclick="admAddUsuario()" style="width:100%;padding:11px;font-size:13px;font-weight:700;border-radius:var(--r-sm);background:var(--blue);color:#fff;border:none;cursor:pointer;margin-bottom:14px"><i class="ti ti-user-plus"></i> Criar usuário cliente</button>
+    <select id="adm-busca-usuario" onchange="admFiltrarUsuarios()" style="font-size:12px;padding:7px 10px;border-radius:var(--r-sm);border:1.5px solid var(--border2);font-family:'Inter',sans-serif;margin-bottom:8px;width:100%;background:var(--white)"><option value="">— Ver todos os usuários —</option></select>
+    <div id="adm-lista-usuarios" style="display:flex;flex-direction:column;gap:6px"></div>`;
+
+  div.innerHTML=`<div style="background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 40px rgba(43,63,212,.2)">
+    <div style="padding:1rem 1.25rem;background:linear-gradient(135deg,var(--blue),var(--blue-dark));display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:1;border-radius:16px 16px 0 0">
+      <button onclick="document.getElementById('modal-secao-bg').remove();abrirModalAdmin()" style="background:rgba(255,255,255,.15);border:none;cursor:pointer;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;flex-shrink:0"><i class="ti ti-arrow-left"></i></button>
+      <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ${cfg.icone}" style="color:#fff;font-size:16px"></i></div>
+      <h2 style="font-size:15px;font-weight:700;color:#fff;flex:1">${cfg.titulo}</h2>
+      <button onclick="document.getElementById('modal-secao-bg').remove()" style="background:rgba(255,255,255,.15);border:none;cursor:pointer;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px">✕</button>
+    </div>
+    <div style="padding:1.25rem 1.5rem">${conteudo}</div>
+  </div>`;
+  document.body.appendChild(div);
+  await admCarregarListas();
+}
+
+let _admMembros=[];
+
+function admEqFotoUpload(input){
+  const file=input.files[0];if(!file)return;
+  comprimirFoto(file,function(base64){
+    document.getElementById('adm-eq-foto').value=base64;
+    const prev=document.getElementById('adm-eq-foto-preview');
+    prev.innerHTML=`<img src="${base64}" style="width:100%;height:100%;object-fit:cover">`;
+  });
+}
+
+function admFiltrarMembros(){
+  const q=document.getElementById('adm-busca-membro')?.value||'';
+  const lista=document.getElementById('adm-lista-membros');
+  if(!lista)return;
+  if(!q){lista.innerHTML='';return;}
+  const filtrados=_admMembros.filter(m=>m.nome===q);
+  lista.innerHTML=filtrados.map(m=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm)">
+      ${m.foto?`<img src="${m.foto}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0">`:
+        `<div style="width:36px;height:36px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:700;color:var(--blue)">${(m.nome||'?')[0].toUpperCase()}</div>`}
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600">${m.nome}</div>
+        <div style="font-size:11px;color:var(--text3)">${m.func||'—'} · <span style="font-weight:600;color:${m.vinculo==='freelancer'?'var(--gold-dark)':'var(--text2)'}">${m.vinculo==='freelancer'?'Freelancer':'Fixo'}</span></div>
+      </div>
+      <button onclick="admExcluirMembro(${m.id},'${m.nome.replace(/'/g,"\\'")}')" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:12px;padding:3px 6px;border-radius:4px"><i class="ti ti-trash"></i></button>
+    </div>`).join('');
+}
+
+async function admAddMembro(){
+  const nome=document.getElementById('adm-eq-nome')?.value.trim();
+  const func=document.getElementById('adm-eq-func')?.value;
+  const vinculo=document.getElementById('adm-eq-vinculo')?.value||'fixo';
+  const foto=document.getElementById('adm-eq-foto')?.value||'';
+  if(!nome||!func){alert('Preencha nome e função');return;}
+  if(_equipe.find(m=>m.nome===nome)){alert('Já existe um membro com esse nome!');return;}
+  try{
+    await sbPost('equipe',{nome,func,vinculo,foto});
+    document.getElementById('adm-eq-nome').value='';
+    document.getElementById('adm-eq-foto').value='';
+    document.getElementById('adm-eq-foto-preview').innerHTML='<i class="ti ti-user" style="font-size:14px;color:var(--blue)"></i>';
+    await carregarEquipe();
+    await admCarregarListas();
+    alert(`Membro "${nome}" adicionado!`);
+  }catch(e){alert('Erro: '+e);}
+}
+
+async function admExcluirMembro(id,nome){
+  if(!confirm(`Excluir o membro "${nome}"?`))return;
+  try{
+    await sbDelete('equipe',id);
+    await carregarEquipe();
+    await admCarregarListas();
+  }catch(e){alert('Erro ao excluir: '+e);}
+}
+
+let _admFuncoes=[];
+
+function admFiltrarFuncoes(){
+  const q=document.getElementById('adm-busca-funcao')?.value||'';
+  const lista=document.getElementById('adm-lista-funcoes');
+  if(!lista)return;
+  if(!q){lista.innerHTML='';return;}
+  const filtradas=_admFuncoes.filter(f=>f.nome===q);
+  lista.innerHTML=filtradas.map(f=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm)">
+      <span class="func-pill ${FP[f.nome]||'fp-foto'}" style="font-size:11px">${f.nome}</span>
+      <span style="flex:1"></span>
+      <button onclick="admExcluirFuncao(${f.id},'${f.nome.replace(/'/g,"\\'")}')" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:12px;padding:3px 6px;border-radius:4px" title="Excluir"><i class="ti ti-trash"></i></button>
+    </div>`).join('');
+}
+
+async function admAddFuncao(){
+  const nome=document.getElementById('adm-funcao')?.value.trim();
+  if(!nome){alert('Digite o nome da função');return;}
+  if(FUNCS.includes(nome)){alert('Essa função já existe!');return;}
+  try{
+    await sbPost('funcoes',{nome});
+    document.getElementById('adm-funcao').value='';
+    await carregarFuncoes();
+    await admCarregarListas();
+    atualizarSelectsFuncao();
+  }catch(e){alert('Erro: '+e);}
+}
+
+async function admExcluirFuncao(id,nome){
+  if(!confirm(`Excluir a função "${nome}"?`))return;
+  try{
+    await sbDelete('funcoes',id);
+    await carregarFuncoes();
+    await admCarregarListas();
+    atualizarSelectsFuncao();
+  }catch(e){alert('Erro ao excluir: '+e);}
+}
+
+let _admEmpresas=[];
+let _admUsuarios=[];
+
+function admFiltrarEmpresas(){
+  const q=document.getElementById('adm-busca-empresa')?.value||'';
+  const lista=document.getElementById('adm-lista-empresas');
+  if(!lista)return;
+  if(!q){lista.innerHTML='';return;}
+  const filtradas=_admEmpresas.filter(e=>e.nome===q);
+  lista.innerHTML=filtradas.map(e=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm)">
+      <i class="ti ti-building" style="color:var(--blue);font-size:14px"></i>
+      <span style="flex:1;font-size:13px;font-weight:500">${e.nome}</span>
+      <button onclick="admExcluirEmpresa(${e.id},'${e.nome.replace(/'/g,"\\'")}')" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:12px;padding:3px 6px;border-radius:4px" title="Excluir"><i class="ti ti-trash"></i></button>
+    </div>`).join('');
+}
+
+function admFiltrarUsuarios(){
+  const q=document.getElementById('adm-busca-usuario')?.value||'';
+  const lista=document.getElementById('adm-lista-usuarios');
+  if(!lista)return;
+  if(!q){lista.innerHTML='';return;}
+  const filtrados=_admUsuarios.filter(u=>u.login===q);
+  lista.innerHTML=filtrados.map(u=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);flex-wrap:wrap">
+      <i class="ti ti-user" style="color:var(--blue);font-size:14px;flex-shrink:0"></i>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600">${u.login} <span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:${u.perfil==='admin'?'var(--blue-light)':'var(--ok-bg)'};color:${u.perfil==='admin'?'var(--blue)':'var(--ok)'}">${u.perfil}</span></div>
+        <div style="font-size:11px;color:var(--text3)">${u.empresa||'—'}</div>
+      </div>
+      <button onclick="admAlterarSenha(${u.id},'${u.login.replace(/'/g,"\\'")}')" style="background:none;border:1px solid var(--border2);cursor:pointer;color:var(--text2);font-size:11px;padding:4px 8px;border-radius:4px;display:flex;align-items:center;gap:3px;white-space:nowrap"><i class="ti ti-key"></i> Senha</button>
+      <button onclick="admAlterarEmpresa(${u.id},'${u.login.replace(/'/g,"\\'")}','${(u.empresa||'').replace(/'/g,"\\'")}')" style="background:none;border:1px solid var(--border2);cursor:pointer;color:var(--text2);font-size:11px;padding:4px 8px;border-radius:4px;display:flex;align-items:center;gap:3px;white-space:nowrap"><i class="ti ti-building"></i> Empresa</button>
+      <button onclick="admExcluirUsuario(${u.id},'${u.login.replace(/'/g,"\\'")}')" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:12px;padding:4px 6px;border-radius:4px"><i class="ti ti-trash"></i></button>
+    </div>`).join('');
+}
+
+async function admCarregarListas(){
+  const selEmp=document.getElementById('adm-emp');
+  // Funções
+  try{_admFuncoes=await sbGet('funcoes','select=*&order=nome');}catch(e){_admFuncoes=[];}
+  const selF=document.getElementById('adm-busca-funcao');
+  if(selF)selF.innerHTML='<option value="">— Ver todas as funções —</option>'+_admFuncoes.map(f=>`<option value="${f.nome}">${f.nome}</option>`).join('');
+  // Popula select de funções do formulário de membro
+  const selEqFunc=document.getElementById('adm-eq-func');
+  if(selEqFunc)selEqFunc.innerHTML='<option value="">Selecione...</option>'+_admFuncoes.map(f=>`<option value="${f.nome}">${f.nome}</option>`).join('');
+  admFiltrarFuncoes();
+  // Membros
+  _admMembros=_equipe.length?_equipe:[];
+  const selM=document.getElementById('adm-busca-membro');
+  if(selM)selM.innerHTML='<option value="">— Ver todos os membros —</option>'+_admMembros.map(m=>`<option value="${m.nome}">${m.nome} (${m.func||'—'})</option>`).join('');
+  admFiltrarMembros();
+  // Empresas
+  _admEmpresas=await sbGet('empresas','select=*&order=nome');
+  if(selEmp)selEmp.innerHTML=_admEmpresas.map(e=>`<option value="${e.nome}">${e.nome}</option>`).join('');
+  const selE=document.getElementById('adm-busca-empresa');
+  if(selE)selE.innerHTML='<option value="">— Ver todas as empresas —</option>'+_admEmpresas.map(e=>`<option value="${e.nome}">${e.nome}</option>`).join('');
+  admFiltrarEmpresas();
+  // Usuários
+  _admUsuarios=await sbGet('usuarios','select=*&order=login');
+  const selU=document.getElementById('adm-busca-usuario');
+  if(selU)selU.innerHTML='<option value="">— Ver todos os usuários —</option>'+_admUsuarios.map(u=>`<option value="${u.login}">${u.login} (${u.empresa||'—'})</option>`).join('');
+  admFiltrarUsuarios();
+}
+
+async function admAddEmpresa(){
+  const nome=document.getElementById('adm-empresa')?.value.trim();
+  if(!nome){alert('Digite o nome da empresa');return;}
+  try{
+    await sbPost('empresas',{nome});
+    await _carregarEmpresas();
+    document.getElementById('adm-empresa').value='';
+    await admCarregarListas();
+  }catch(e){alert('Erro: '+e);}
+}
+
+async function admExcluirEmpresa(id,nome){
+  if(!confirm(`Excluir a empresa "${nome}"? Os usuários vinculados a ela não serão excluídos.`))return;
+  try{
+    await sbDelete('empresas',id);
+    await _carregarEmpresas();
+    await admCarregarListas();
+  }catch(e){alert('Erro ao excluir: '+e);}
+}
+
+async function admAddUsuario(){
+  const u=document.getElementById('adm-user')?.value.trim();
+  const s=document.getElementById('adm-pass')?.value.trim();
+  const e=document.getElementById('adm-emp')?.value;
+  if(!u||!s||!e){alert('Preencha todos os campos');return;}
+  try{
+    await sbPost('usuarios',{login:u,senha:s,perfil:'cliente',empresa:e});
+    document.getElementById('adm-user').value='';
+    document.getElementById('adm-pass').value='';
+    await admCarregarListas();
+    alert('Usuário "'+u+'" criado para '+e+'!');
+  }catch(e){alert('Erro: '+e);}
+}
+
+async function admAlterarSenha(id,login){
+  const nova=prompt(`Nova senha para "${login}":`);
+  if(!nova||!nova.trim())return;
+  try{
+    await sbPatch('usuarios',id,{senha:nova.trim()});
+    alert('Senha alterada com sucesso!');
+  }catch(e){alert('Erro: '+e);}
+}
+
+async function admAlterarEmpresa(id,login,empresaAtual){
+  const opts=_empresas.map(e=>`<option value="${e.nome}"${e.nome===empresaAtual?' selected':''}>${e.nome}</option>`).join('');
+  const div=document.createElement('div');
+  div.style.cssText='position:fixed;inset:0;background:rgba(18,19,42,.7);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem';
+  div.innerHTML=`<div style="background:#fff;border-radius:12px;padding:1.5rem;width:100%;max-width:360px;box-shadow:0 12px 40px rgba(0,0,0,.2)">
+    <h3 style="font-size:14px;font-weight:700;color:var(--blue);margin-bottom:12px"><i class="ti ti-building" style="margin-right:6px"></i>Alterar empresa — ${login}</h3>
+    <select id="adm-nova-emp" style="width:100%;font-size:13px;padding:10px 12px;border-radius:var(--r-sm);border:1.5px solid var(--border2);font-family:'Inter',sans-serif;margin-bottom:14px">${opts}</select>
+    <div style="display:flex;gap:8px">
+      <button onclick="this.closest('[style*=fixed]').remove()" style="flex:1;padding:9px;font-size:13px;border-radius:var(--r-sm);border:1.5px solid var(--border2);background:none;cursor:pointer">Cancelar</button>
+      <button onclick="admConfirmarEmpresa(${id},'${login}')" style="flex:1;padding:9px;font-size:13px;font-weight:700;border-radius:var(--r-sm);background:var(--blue);color:#fff;border:none;cursor:pointer">Salvar</button>
+    </div>
+  </div>`;
+  document.body.appendChild(div);
+}
+
+async function admConfirmarEmpresa(id,login){
+  const nova=document.getElementById('adm-nova-emp')?.value;
+  if(!nova)return;
+  try{
+    await sbPatch('usuarios',id,{empresa:nova});
+    document.querySelectorAll('[style*="z-index: 400"], [style*="z-index:400"]').forEach(el=>el.remove());
+    await admCarregarListas();
+    alert(`Empresa de "${login}" alterada para "${nova}"!`);
+  }catch(e){alert('Erro: '+e);}
+}
+
+async function admExcluirUsuario(id,login){
+  if(!confirm(`Excluir o usuário "${login}"? Esta ação não pode ser desfeita.`))return;
+  try{
+    await sbDelete('usuarios',id);
+    await admCarregarListas();
+  }catch(e){alert('Erro ao excluir: '+e);}
+}
+
+document.getElementById('modal-edicao').addEventListener('click',function(e){if(e.target===this)fecharModalEdicao();});
+document.getElementById('l-senha').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
+document.getElementById('l-usuario').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
+atualizarBadgeGS();
+
+// ══════ PWA + NOTIFICAÇÕES ══════
+
+async function registrarServiceWorker(){
+  if(!('serviceWorker' in navigator))return;
+  try{
+    await navigator.serviceWorker.register('service-worker.js');
+  }catch(e){console.warn('SW não registrado:',e);}
+}
+
+async function solicitarPermissaoNotificacao(){
+  if(!('Notification' in window))return;
+  if(Notification.permission==='default'){
+    await Notification.requestPermission();
+  }
+}
+
+async function agendarNotificacoes(){
+  if(!('serviceWorker' in navigator)||!dados.length)return;
+  if(Notification.permission!=='granted')return;
+  try{
+    const sw=await navigator.serviceWorker.ready;
+    sw.active?.postMessage({
+      tipo:'agendar-notificacoes',
+      entregaveis:dados
+    });
+  }catch(e){}
+}
+
+// Verifica horário para notificar (entre 8h e 9h da manhã)
+function deveNotificarAgora(){
+  const hora=new Date().getHours();
+  const ultimaNotif=localStorage.getItem('mkt_ultima_notif');
+  const hoje=new Date().toISOString().split('T')[0];
+  if(ultimaNotif===hoje)return false; // já notificou hoje
+  if(hora>=8&&hora<9){localStorage.setItem('mkt_ultima_notif',hoje);return true;}
+  return false;
+}
+
+// Inicializa PWA
+registrarServiceWorker();
+solicitarPermissaoNotificacao();
+(async function restaurarSessao(){
+  const sessao=localStorage.getItem('mkt_sessao');
+  if(!sessao)return;
+  try{_usuario=JSON.parse(sessao);}catch(e){localStorage.removeItem('mkt_sessao');return;}
+  // Mostra app imediatamente sem esperar o banco
+  document.getElementById('login-page').style.display='none';
+  document.getElementById('app-main').style.display='block';
+  if(_usuario.perfil==='admin'){
+    document.getElementById('empresa-bar').style.display='flex';
+  }else{
+    document.getElementById('cliente-bar').style.display='flex';
+    document.getElementById('cliente-empresa-nome').textContent=_usuario.empresa||'';
+    _empresaFiltro=_usuario.empresa||'';
+    document.getElementById('gs-btn').style.display='none';
+  }
+  // Carrega dados em background — se falhar, mantém a sessão
+  try{
+    if(_usuario.perfil==='admin') await _carregarEmpresas();
+    await _carregarDadosCliente();
+    await carregarFuncoes();
+    await carregarEquipe();
+    renderDashboard();
+    setInterval(()=>_carregarDadosCliente(),60000);
+  }catch(e){
+    console.warn('Erro ao recarregar dados, mantendo sessão:', e);
+  }
+})();
+
 </script>
+</div>
 </body>
 </html>
