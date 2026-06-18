@@ -1024,8 +1024,10 @@ function parseDate(v){
 async function carregarDoSheets(){
   if(!gsUrl)return;
   try{
-    document.getElementById('hd-meta').textContent='⟳ Sincronizando...';
+    const lbl=document.getElementById('gs-label');
+    if(lbl)lbl.textContent='⟳ Carregando...';
     const resp=await fetch(gsUrl+'?nocache='+Date.now(),{cache:'no-store'});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
     const json=await resp.json();
     if(Array.isArray(json)&&json.length>0){
       dados=json.map(d=>({
@@ -1048,9 +1050,17 @@ async function carregarDoSheets(){
       dados.forEach(d=>{if(d.foto&&d.resp&&!fotosEquipe[d.resp]){fotosEquipe[d.resp]=d.foto;}});
       saveFotos();
       saveLocal();populateFilterSelects();
+      const lbl2=document.getElementById('gs-label');
+      if(lbl2)lbl2.textContent='Sheets conectado';
     }
     renderAtivo();
-  }catch(err){console.warn('Erro Sheets:',err);renderAtivo();}
+  }catch(err){
+    console.warn('Erro Sheets:',err);
+    const lbl3=document.getElementById('gs-label');
+    if(lbl3)lbl3.textContent='Erro ao conectar';
+    setTimeout(()=>{const l=document.getElementById('gs-label');if(l)l.textContent='Sheets conectado';},3000);
+    renderAtivo();
+  }
 }
 async function syncGS(item){
   if(!gsUrl)return;
@@ -1092,7 +1102,11 @@ document.getElementById('e-nova-tarefa').addEventListener('keydown',function(e){
 document.getElementById('e-link').addEventListener('input',function(){const a=document.getElementById('e-link-open');if(this.value){a.href=this.value;a.style.display='block';}else{a.style.display='none';}});
 gsUrl='https://script.google.com/macros/s/AKfycby9vj4XisaauaAx0tgnzhz-MOn74PFNgRPSEhpHZdFDD6ldIivH1iM_OJW7oOF3-r44/exec';
 localStorage.setItem('mkt_gs_url',gsUrl);
-atualizarBadgeGS();populateFilterSelects();atualizarPeriodoLabel();carregarDoSheets();
+atualizarBadgeGS();populateFilterSelects();atualizarPeriodoLabel();
+// Sempre carrega do Sheets primeiro — ignora cache local se Sheets disponível
+carregarDoSheets().then(()=>{
+  if(dados.length===0)renderDashboard();
+});
 setInterval(()=>carregarDoSheets(),60000);
 </script>
 </body>
